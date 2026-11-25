@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#09121a" />
+<title>AEI-01 | First Expedition · 0.4.0</title>
+<style>
+:root{--bg:#081018;--panel:#101d28;--panel2:#142532;--line:#29404d;--muted:#8da4b2;--text:#e4edf0;--cyan:#76d4d2;--cyan2:#3eaaa9;--amber:#e6b76c;--red:#d97870;--green:#8cc6a1}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+#app{height:100%;width:100%;position:relative;background:radial-gradient(ellipse at 52% 35%,#182c38 0%,#0b1720 52%,#070e15 100%)}
+#facility{position:absolute;inset:0;z-index:5;overflow:auto;background:linear-gradient(135deg,rgba(8,16,24,.98),rgba(12,27,38,.98)),radial-gradient(ellipse at 75% 15%,#244858 0%,transparent 50%)}
+.fac-shell{max-width:1450px;margin:auto;padding:28px clamp(16px,3vw,46px) 34px;min-height:100%;display:flex;flex-direction:column}
+.fac-top{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line);padding-bottom:20px}
+.brand{display:flex;align-items:center;gap:14px}.brand-mark{width:48px;height:48px;border:1px solid #4d7981;border-radius:12px;display:grid;place-items:center;color:var(--cyan);background:linear-gradient(145deg,#1d3b47,#10232e);box-shadow:0 0 30px #55c9c322}.brand-mark svg{width:28px;height:28px}.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);font-weight:700}.brand h1{margin:3px 0 0;font-size:clamp(20px,3vw,29px);letter-spacing:.025em;font-weight:650}.fac-meta{text-align:right;color:var(--muted);font-size:12px;line-height:1.8}.fac-meta strong{color:var(--text);font-weight:600}
+.fac-nav{display:flex;gap:6px;flex-wrap:wrap;padding:18px 0 22px}.nav-btn{border:1px solid transparent;background:transparent;color:var(--muted);padding:10px 14px;border-radius:8px;font-size:13px;letter-spacing:.02em}.nav-btn:hover{color:var(--text);background:#ffffff08}.nav-btn.active{border-color:#37606a;background:#18313b;color:var(--cyan)}
+.hub-content{flex:1;min-height:400px}.hub-hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:20px}.hero-main,.hero-side,.hub-card{border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,#142733e8,#0e1b25f0);box-shadow:0 18px 55px #0002}.hero-main{padding:clamp(20px,3vw,38px);position:relative;overflow:hidden;min-height:320px}.hero-main:after{content:"";position:absolute;width:360px;height:360px;right:-100px;bottom:-210px;border:1px solid #6bc6c433;border-radius:50%;box-shadow:0 0 0 28px #6bc6c311,0 0 0 60px #6bc6c30b}.hero-main h2{font-size:clamp(26px,3.7vw,42px);line-height:1.08;max-width:620px;margin:12px 0 14px;font-weight:620}.hero-main p{max-width:650px;color:#a9bbc4;line-height:1.7;font-size:14px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.primary-btn,.secondary-btn{border-radius:8px;padding:12px 17px;border:1px solid #4d9a9a;font-size:13px;font-weight:650;letter-spacing:.025em}.primary-btn{background:linear-gradient(135deg,#5dbab6,#348a90);color:#061419;box-shadow:0 7px 24px #3ea7a533}.primary-btn:hover{filter:brightness(1.12)}.secondary-btn{background:#ffffff08;border-color:#35505c;color:#d2e0e5}.secondary-btn:hover{background:#ffffff12}.hero-side{padding:22px;display:flex;flex-direction:column;gap:16px}.side-head{display:flex;justify-content:space-between;align-items:center}.side-head h3{margin:0;font-size:14px;font-weight:650}.status-pill{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);border:1px solid #578d6a66;padding:5px 8px;border-radius:30px;background:#234b342c}.statline{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #29404d99;padding:10px 0;font-size:12px}.statline span{color:var(--muted)}.statline strong{font-weight:600;text-align:right}.progress-track{height:5px;background:#263945;border-radius:5px;overflow:hidden;margin-top:6px}.progress-fill{height:100%;background:linear-gradient(90deg,#419a9c,#83d7cb);width:0%;transition:width .3s}.hub-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.hub-card{padding:18px;min-height:120px}.hub-card .card-icon{color:var(--cyan);font-size:18px;margin-bottom:12px}.hub-card h3{font-size:13px;margin:0 0 7px}.hub-card p{font-size:12px;color:var(--muted);line-height:1.55;margin:0}.hub-footer{display:flex;justify-content:space-between;gap:14px;align-items:center;border-top:1px solid var(--line);margin-top:22px;padding-top:16px;color:#77909e;font-size:11px}
+.panel-page{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel-page .hub-card{min-height:180px}.panel-page h2{grid-column:1/-1;font-size:25px;font-weight:620;margin:0 0 2px}.panel-page h3{font-size:14px}.detail-row{display:flex;justify-content:space-between;border-top:1px solid #293e4a;padding:10px 0;font-size:12px}.detail-row span{color:var(--muted)}.entry{border-left:2px solid #477b80;padding:8px 12px;margin:10px 0;background:#ffffff05;border-radius:0 7px 7px 0}.entry strong{font-size:12px}.entry p{font-size:12px;color:var(--muted);line-height:1.55;margin:5px 0 0}
+#game{position:absolute;inset:0;display:none;grid-template-rows:54px 1fr 34px;z-index:1;background:#071018}
+.game-top{display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #263d49;background:#0c1922;gap:12px;z-index:2}.game-title{display:flex;align-items:center;gap:10px;min-width:0}.game-logo{width:26px;height:26px;border:1px solid #45747a;border-radius:7px;display:grid;place-items:center;color:var(--cyan);font-size:11px;font-weight:800}.game-title strong{font-size:12px;letter-spacing:.08em;white-space:nowrap}.game-title span{font-size:11px;color:var(--muted);margin-left:5px}.top-stats{display:flex;align-items:center;gap:15px}.metric{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted);white-space:nowrap}.metric b{font-size:11px;color:#dce8eb;font-weight:650}.meter{width:62px;height:5px;background:#263b46;border-radius:5px;overflow:hidden}.meter i{display:block;width:100%;height:100%;background:var(--cyan)}.game-top-actions{display:flex;gap:6px}.mini-btn{border:1px solid #29434f;background:#132630;color:#a9c0c9;border-radius:6px;padding:6px 9px;font-size:10px}.mini-btn:hover{background:#1b3742;color:#e3f1f2}
+.game-body{display:grid;grid-template-columns:220px minmax(0,1fr) 230px;min-height:0}.side-panel{background:linear-gradient(180deg,#0e1c26,#0b1720);padding:16px 14px;border-right:1px solid #253a45;overflow:auto}.side-panel.right{border-right:0;border-left:1px solid #253a45}.section-label{font-size:9px;letter-spacing:.18em;color:#70b9b8;text-transform:uppercase;font-weight:750;margin-bottom:10px}.mission-name{font-size:14px;font-weight:650;line-height:1.35;margin-bottom:7px}.muted{color:var(--muted)}.small-copy{font-size:11px;line-height:1.55;color:#91a7b1}.objective{display:flex;gap:8px;align-items:flex-start;margin:13px 0;font-size:11px;line-height:1.45;color:#bdcbd0}.obj-dot{width:14px;height:14px;flex:none;border:1px solid #54717b;border-radius:50%;margin-top:1px;display:grid;place-items:center;font-size:9px;color:var(--green)}.objective.done{color:#6f9389}.objective.done .obj-dot{border-color:#6db68b;background:#234b38}.divider{height:1px;background:#263c48;margin:16px 0}.key-row{display:flex;justify-content:space-between;align-items:center;margin:9px 0;font-size:10px;color:#9aafb8}.key{border:1px solid #425b66;border-bottom-width:2px;border-radius:4px;padding:3px 6px;color:#d9e6e8;background:#172833;font-size:9px;min-width:23px;text-align:center}.viewport{position:relative;min-width:0;min-height:0;background:#071017;overflow:hidden}.viewport canvas{display:block;width:100%;height:100%;cursor:crosshair}.view-label{position:absolute;left:14px;top:13px;pointer-events:none;color:#9bb2bc;font-size:9px;letter-spacing:.13em;text-transform:uppercase;text-shadow:0 1px 4px #000}.view-coords{position:absolute;right:14px;top:13px;pointer-events:none;color:#829aa5;font:10px ui-monospace,monospace;text-shadow:0 1px 4px #000}.reticle{position:absolute;left:50%;top:50%;width:18px;height:18px;border:1px solid #8dd9d4aa;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:.4}.reticle:before,.reticle:after{content:"";position:absolute;background:#8dd9d488}.reticle:before{width:28px;height:1px;left:-6px;top:8px}.reticle:after{height:28px;width:1px;top:-6px;left:8px}.interact-prompt{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);padding:9px 13px;border:1px solid #5d9998aa;border-radius:7px;background:#07151ddd;color:#d9ecec;font-size:11px;white-space:nowrap;display:none;box-shadow:0 6px 28px #0008}.interact-prompt kbd{color:var(--cyan);font-weight:800;margin-right:7px}.toast{position:absolute;left:50%;top:55px;transform:translate(-50%,-8px);padding:9px 14px;border:1px solid #45767a;border-radius:7px;background:#0b2029ed;color:#d7eeee;font-size:11px;opacity:0;transition:all .2s;pointer-events:none;max-width:80%;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.bottom-bar{display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#0b1720;border-top:1px solid #223843;color:#78909b;font-size:9px;letter-spacing:.06em}.bottom-bar strong{color:#a7bec6;font-weight:600}.readout{padding:12px;border:1px solid #29424e;background:#12232e;border-radius:8px;margin-bottom:14px}.readout h4{font-size:11px;margin:0 0 7px;color:#d9e7e9}.readout p{font-size:10px;line-height:1.5;color:#91a8b1;margin:0}.data-number{font-size:26px;color:var(--cyan);font-weight:650;letter-spacing:-.04em}.discovery-list{display:flex;flex-direction:column;gap:8px}.discovery-item{font-size:10px;color:#a8bbc3;padding:8px;border:1px solid #243b47;background:#10202a;border-radius:6px}.discovery-item small{display:block;color:#6e8995;font-size:9px;margin-top:3px}.cargo-readout{font-size:10px;line-height:1.5;color:#a8bbc3;padding:9px;border:1px solid #29424e;background:#12232e;border-radius:7px}.cargo-readout strong{display:block;color:#dce9e9;font-size:11px;margin-bottom:3px}.cargo-readout small{display:block;color:#78939d;margin-top:3px}.signal-line{display:flex;justify-content:space-between;font-size:10px;color:#94aab4;margin:8px 0}.scanner-state{display:inline-flex;align-items:center;gap:5px;color:var(--cyan);font-size:9px;letter-spacing:.1em}.scanner-state:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.modal-backdrop{position:absolute;inset:0;z-index:10;background:#02090fdd;display:none;align-items:center;justify-content:center;padding:16px}.modal-backdrop.open{display:flex}.modal{width:min(780px,100%);max-height:min(90%,760px);overflow:auto;border:1px solid #42606c;border-radius:13px;background:linear-gradient(145deg,#142731,#0b1720);box-shadow:0 24px 90px #000b;padding:20px}.modal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}.modal-head h2{font-size:19px;margin:0;font-weight:650}.close-btn{border:1px solid #35505d;background:#142833;border-radius:6px;padding:6px 10px;color:#b9cbd1}.map-wrap{height:min(60vh,470px);border:1px solid #2a4651;background:#071119;border-radius:8px;overflow:hidden}.map-wrap canvas{width:100%;height:100%;display:block}.modal-note{font-size:11px;color:#8da4af;line-height:1.6;margin-top:12px}.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.modal-card{padding:13px;border:1px solid #2a4350;background:#11232d;border-radius:8px}.modal-card h3{margin:0 0 7px;font-size:12px}.modal-card p{margin:0;color:#91a8b2;font-size:11px;line-height:1.55}.log-entry{padding:11px 0;border-bottom:1px solid #2a414d}.log-entry time{font:10px ui-monospace,monospace;color:#6faeae}.log-entry p{font-size:11px;line-height:1.55;color:#b3c4ca;margin:5px 0 0}
+
+.touch-controls{display:none;position:absolute;inset:0;pointer-events:none;z-index:3;-webkit-user-select:none;user-select:none}.touch-pad{position:absolute;left:14px;bottom:16px;width:132px;height:132px;pointer-events:auto}.touch-key{position:absolute;width:42px;height:42px;border:1px solid #7b9b9caa;border-radius:10px;background:#0b1b24cc;color:#d6ecea;font-size:16px;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}.touch-key:active,.touch-action:active{background:#31545acc}.touch-key.up{left:45px;top:0}.touch-key.left{left:0;top:45px}.touch-key.down{left:45px;top:45px}.touch-key.right{right:0;top:45px}.touch-actions{position:absolute;right:13px;bottom:20px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}.touch-action{min-width:62px;padding:11px 9px;border-radius:9px;border:1px solid #7b9b9caa;background:#0b1b24cc;color:#d6ecea;font-size:10px;font-weight:700;letter-spacing:.08em;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+html.touch-controls-enabled .touch-controls{display:block}
+@media (pointer:coarse){.game-top-actions .mini-btn:nth-child(2){display:none}.game-top-actions .mini-btn{font-size:9px}}
+
+@media(max-width:950px){.game-body{grid-template-columns:180px minmax(0,1fr)}.side-panel.right{display:none}.top-stats{gap:8px}.metric .meter{width:42px}}
+@media(max-width:700px){.fac-shell{padding:16px}.fac-top{align-items:flex-start}.fac-meta{font-size:10px}.brand-mark{width:40px;height:40px}.hub-hero{grid-template-columns:1fr}.hero-main{min-height:260px}.hero-side{gap:8px}.hub-cards{grid-template-columns:1fr}.hub-footer{align-items:flex-start;flex-direction:column}.panel-page{grid-template-columns:1fr}.panel-page h2{grid-column:auto}.game-body{grid-template-columns:minmax(0,1fr)}.side-panel.left{display:none}.game-top{padding:0 8px}.game-title span{display:none}.top-stats .metric:nth-child(2){display:none}.metric{gap:4px}.metric .meter{width:35px}.game-top-actions .mini-btn{padding:6px}.game-top-actions .mini-btn:nth-child(2){display:none}.bottom-bar{font-size:8px}.modal-grid{grid-template-columns:1fr}}
+@media(max-height:560px){.fac-shell{padding-top:12px}.fac-nav{padding:10px 0}.hero-main{min-height:230px}.hero-main p{margin:8px 0}.game-body{grid-template-columns:165px minmax(0,1fr) 190px}.side-panel{padding:9px}.section-label{margin-bottom:5px}.divider{margin:9px 0}}
+
+.patch-group{border-left:2px solid #477b80;padding:8px 12px;margin:10px 0;background:#ffffff05;border-radius:0 7px 7px 0}.patch-group strong{font-size:12px;color:#dce9e9}.patch-group p{font-size:12px;color:var(--muted);line-height:1.55;margin:5px 0 0}.upgrade-card button{margin-top:14px}.upgrade-card button:disabled{opacity:.48;cursor:not-allowed}.upgrade-card .status-pill{display:inline-block;margin-top:14px}
+
+.nav-badge[hidden]{display:none}
+.nav-badge{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 5px;margin-left:5px;border-radius:20px;background:#a65b4c;color:#fff;font-size:10px;font-weight:800;vertical-align:middle}
+.message-layout{display:grid;grid-template-columns:minmax(230px,.82fr) minmax(0,1.35fr);gap:14px;grid-column:1/-1;min-width:0}
+.message-panel{border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,#142733e8,#0e1b25f0);padding:15px;min-width:0}
+.message-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.message-toolbar input,.message-toolbar select,.setting-select{width:100%;min-width:0;border:1px solid #35505c;background:#0d1c26;color:var(--text);border-radius:7px;padding:9px 10px;font:inherit;font-size:11px}
+.message-search{grid-column:1/-1}
+.message-list{display:flex;flex-direction:column;gap:7px;max-height:520px;overflow:auto;padding-right:3px}
+.message-list-item{width:100%;text-align:left;border:1px solid #29434f;background:#0d1c26;border-radius:8px;padding:10px;display:block}
+.message-list-item:hover,.message-list-item.selected{border-color:#5e9c9e;background:#17303a}
+.message-list-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.message-sender{font-size:11px;font-weight:700;color:#e1ecee;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.message-list-time{font-size:9px;color:#84a0aa;white-space:nowrap}
+.message-preview{font-size:10px;color:#9db1b9;line-height:1.45;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.message-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.message-tag{font-size:9px;letter-spacing:.04em;color:#9bb8bf;border:1px solid #36515b;border-radius:20px;padding:3px 6px}
+.message-tag.unread{color:#f1cf90;border-color:#896e43;background:#6c512322}
+.message-tag.priority{color:#f0a99e;border-color:#83514a;background:#69352d22}
+.message-detail{min-height:240px}
+.message-detail h3{font-size:17px;line-height:1.35;margin:8px 0 7px;overflow-wrap:anywhere}
+.message-detail-meta{font-size:10px;color:#8da8b2;line-height:1.7;border-bottom:1px solid #29404d;padding-bottom:12px;margin-bottom:13px}
+.message-body{font-size:13px;line-height:1.75;color:#c3d2d7;white-space:pre-wrap;overflow-wrap:anywhere}
+.message-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.message-empty{font-size:11px;color:#91a8b2;line-height:1.6;padding:16px 8px}
+.message-count{font-size:10px;color:#8ba3ad;margin-top:8px}
+.objective-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.objective-header .section-label{margin:0}
+.objective-toggle{border:1px solid #35505c;background:#132630;color:#aac0c8;border-radius:5px;padding:4px 7px;font-size:9px}
+.mobile-objectives{display:none}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;border-top:1px solid #293e4a;padding:12px 0;font-size:12px}
+.setting-row span{color:var(--muted)}
+.map-room-action{margin-top:8px}
+@media(max-width:700px){.message-layout{grid-template-columns:1fr}.message-list{max-height:230px}.message-detail{min-height:180px}.message-toolbar{grid-template-columns:1fr 1fr}.mobile-objectives{display:block;position:absolute;z-index:2;left:10px;top:38px;width:min(225px,56vw);max-height:38%;overflow:auto;border:1px solid #45636c;border-radius:8px;background:#0a1922e8;padding:7px;pointer-events:auto}.mobile-objectives .objective{font-size:9px;margin:7px 0}.mobile-objective-toggle{width:100%;text-align:left;border:0;background:transparent;color:#d5e5e7;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px}.mobile-objectives .mobile-objective-list{display:none}.mobile-objectives.expanded .mobile-objective-list{display:block}}
+
+</style>
+</head>
+<body>
+<div id="app">
+  <section id="facility">
+    <div class="fac-shell">
+      <header class="fac-top">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M16 3 27 9.5v13L16 29 5 22.5v-13L16 3Z" stroke="currentColor" stroke-width="1.5"/><path d="M16 8v16M9 12l14 8M23 12 9 20" stroke="currentColor" stroke-width="1.2"/><circle cx="16" cy="16" r="3" fill="currentColor"/></svg></div>
+          <div><div class="eyebrow">Deep Exploration Initiative</div><h1>Remote Research Facility</h1></div>
+        </div>
+        <div class="fac-meta"><div><strong>EXPEDITION DESIGNATION</strong> &nbsp; AEI-01</div><div>REMOTE OPERATIONS &nbsp;·&nbsp; SYSTEMS NOMINAL</div></div>
+      </header>
+      <nav class="fac-nav" id="hubNav">
+        <button class="nav-btn active" data-tab="expedition">Expedition</button>
+        <button class="nav-btn" data-tab="drone">Drone</button>
+        <button class="nav-btn" data-tab="map">Map</button>
+        <button class="nav-btn" data-tab="database">Database</button>
+        <button class="nav-btn" data-tab="journal">Journal</button>
+        <button class="nav-btn" data-tab="research">Research</button>
+        <button class="nav-btn" data-tab="communications">Communications <span id="unreadBadge" class="nav-badge" hidden>0</span></button>
+        <button class="nav-btn" data-tab="logbook">Logbook</button>
+        <button class="nav-btn" data-tab="patchnotes">Patch Notes</button>
+        <button class="nav-btn" data-tab="settings">Settings</button>
+      </nav>
+      <main class="hub-content" id="hubContent"></main>
+      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.4.0 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
+    </div>
+  </section>
+
+  <section id="game">
+    <header class="game-top">
+      <div class="game-title"><div class="game-logo">DEI</div><div><strong>AEI-01 / FIELD LINK</strong><span>DRONE CONTROL</span></div></div>
+      <div class="top-stats">
+        <div class="metric">BAT <b id="batteryText">100%</b><span class="meter"><i id="batteryMeter"></i></span></div>
+        <div class="metric">CONDITION <b id="conditionText">100%</b><span class="meter"><i id="conditionMeter"></i></span></div>
+        <div class="metric">DATA <b id="dataText">0</b></div>
+        <div class="metric">CARGO <b id="cargoText">0 / 1</b></div>
+      </div>
+      <div class="game-top-actions"><button class="mini-btn" id="mapButton">MAP · M</button><button class="mini-btn" id="logButton">LOG · L</button><button class="mini-btn" id="facilityButton">LINK · ESC</button></div>
+    </header>
+    <div class="game-body">
+      <aside class="side-panel left">
+        <div class="section-label">Current assignment</div>
+        <div class="mission-name">Initial Survey<br><span class="muted">Access & Maintenance</span></div>
+        <p class="small-copy" id="missionDescription">Establish a local survey record and identify the condition of nearby systems.</p>
+        <div class="divider"></div>
+        <div class="objective-header"><div class="section-label">Objectives</div><button class="objective-toggle" id="objectiveToggle" aria-expanded="true">Collapse</button></div>
+        <div class="small-copy" id="objectiveSummary">Initial survey in progress.</div>
+        <div id="objectiveList"></div>
+        <div class="divider"></div>
+        <div class="section-label">Controls</div>
+        <div class="key-row"><span>Move drone</span><span><i class="key">W</i> <i class="key">A</i> <i class="key">S</i> <i class="key">D</i></span></div>
+        <div class="key-row"><span>Scan nearby</span><i class="key">Q</i></div>
+        <div class="key-row"><span>Flashlight</span><i class="key">F</i></div>
+        <div class="key-row"><span>Interact</span><i class="key">E</i></div>
+        <div class="key-row"><span>Map</span><i class="key">M</i></div>
+        <div class="key-row"><span>Logbook</span><i class="key">L</i></div>
+        <div class="key-row"><span>Return / pause</span><i class="key">ESC</i></div>
+      </aside>
+      <main class="viewport" id="viewport">
+        <canvas id="worldCanvas" aria-label="Top-down view of the exploration drone inside AEI-01"></canvas>
+        <div class="view-label">LIVE OPTICAL FEED &nbsp;·&nbsp; AEI-01 / ACCESS LEVEL 01</div>
+        <div class="view-coords" id="coords">X 0000 / Y 0000</div>
+        <div class="reticle"></div>
+        <div class="mobile-objectives" id="mobileObjectives"><button class="mobile-objective-toggle" id="mobileObjectiveToggle">OBJECTIVES · TAP TO EXPAND</button><div class="mobile-objective-list" id="mobileObjectiveList"></div></div>
+        <div class="interact-prompt" id="interactPrompt"><kbd>E</kbd><span id="promptText">Interact</span></div>
+        <div class="toast" id="toast"></div>
+        <div class="touch-controls" id="touchControls">
+          <div class="touch-pad">
+            <button class="touch-key up" data-key="w" aria-label="Move forward">▲</button>
+            <button class="touch-key left" data-key="a" aria-label="Move left">◀</button>
+            <button class="touch-key down" data-key="s" aria-label="Move backward">▼</button>
+            <button class="touch-key right" data-key="d" aria-label="Move right">▶</button>
+          </div>
+          <div class="touch-actions">
+            <button class="touch-action" id="touchScan">SCAN</button>
+            <button class="touch-action" id="touchInteract">USE</button>
+            <button class="touch-action" id="touchLight">LIGHT</button>
+          </div>
+        </div>
+      </main>
+      <aside class="side-panel right">
+        <div class="section-label">Sensor readout</div>
+        <div class="readout"><div class="scanner-state" id="scannerState">PASSIVE SCAN</div><h4 id="sensorTitle" style="margin-top:10px">No target selected</h4><p id="sensorText">Move near an object and activate the scanner to inspect it.</p></div>
+        <div class="section-label">Survey progress</div>
+        <div class="data-number" id="progressNumber">0 / 3</div><div class="small-copy">Local survey targets analyzed</div><div class="progress-track"><div class="progress-fill" id="surveyProgress"></div></div>
+        <div class="divider"></div>
+        <div class="section-label">Recovered data</div><div class="discovery-list" id="discoveryList"><div class="discovery-item">No records recovered<small>Survey data will appear here</small></div></div>
+        <div class="divider"></div>
+        <div class="section-label">Manipulator cargo</div><div class="cargo-readout" id="cargoReadout"><strong>Manipulator empty</strong>No physical samples collected.</div>
+        <div class="divider"></div><div class="section-label">Drone systems</div><div class="small-copy" id="systemStatus">Camera operational · Scanner ready · Illumination enabled</div>
+        <div class="divider"></div><div class="section-label">System notices</div><p class="small-copy" id="noticeText">Remote link stable. Environmental readings within drone operating limits.</p>
+      </aside>
+    </div>
+    <footer class="bottom-bar"><span><strong>REMOTE LINK</strong> &nbsp; STABLE &nbsp;·&nbsp; LOCAL ENVIRONMENTAL READINGS AVAILABLE</span><span id="bottomStatus">FLASHLIGHT ON &nbsp;·&nbsp; SCANNER READY</span></footer>
+  </section>
+
+  <div class="modal-backdrop" id="mapModal"><div class="modal"><div class="modal-head"><h2>Survey Map / Access & Maintenance</h2><button class="close-btn" data-close="mapModal">Close ✕</button></div><div class="map-wrap"><canvas id="mapCanvas"></canvas></div><div class="modal-note">Only rooms entered by the drone appear on this map. Unexplored areas remain uncharted. The current drone position is marked in cyan. Amber exclamation points identify rooms you marked for follow-up.</div></div></div>
+  <div class="modal-backdrop" id="logModal"><div class="modal"><div class="modal-head"><h2>Expedition Logbook</h2><button class="close-btn" data-close="logModal">Close ✕</button></div><div id="logContent"></div></div></div>
+  <div class="modal-backdrop" id="pauseModal"><div class="modal"><div class="modal-head"><h2>Remote Link Paused</h2><button class="close-btn" data-close="pauseModal">Resume ✕</button></div><p class="small-copy">The drone remains in its current location. The remote connection is paused; no progress will be lost.</p><div class="hero-actions"><button class="primary-btn" id="resumeButton">Resume Control</button><button class="secondary-btn" id="returnButton">Return to Facility</button><button class="secondary-btn" id="saveButton">Save Expedition</button></div></div></div>
+</div>
+<script>
+(() => {
+'use strict';
+const $ = (id) => document.getElementById(id);
+const facility = $('facility'), game = $('game'), hubContent = $('hubContent');
+const canvas = $('worldCanvas'), ctx = canvas.getContext('2d');
+const mapCanvas = $('mapCanvas'), mapCtx = mapCanvas.getContext('2d');
+const fogCanvas = document.createElement('canvas'), fogCtx = fogCanvas.getContext('2d');
+const viewport = $('viewport');
+const VERSION = '0.4.0';
+const saveKey = 'dei_aei01_first_expedition_v01';
+
+const rooms = [
+  {id:'bay',name:'DEPLOYMENT BAY',x:80,y:120,w:340,h:280},
+  {id:'main',name:'MAINTENANCE PASSAGE',x:400,y:220,w:580,h:100},
+  {id:'storage',name:'STORAGE ROOM',x:900,y:80,w:310,h:300},
+  {id:'obsBranch',name:'',x:680,y:300,w:90,h:240},
+  {id:'observation',name:'OBSERVATION PASSAGE',x:510,y:500,w:360,h:260},
+  {id:'utilityBranch',name:'',x:940,y:280,w:90,h:260},
+  {id:'utility',name:'UTILITY ROOM',x:900,y:500,w:340,h:250},
+  {id:'transitBranch',name:'',x:1190,y:680,w:100,h:160},
+  {id:'transit',name:'TRANSIT STATION',x:1120,y:810,w:390,h:240},
+  {id:'serviceBranch',name:'',x:1240,y:570,w:120,h:150},
+  {id:'powerDistribution',name:'POWER DISTRIBUTION CHAMBER',x:1360,y:500,w:210,h:290}
+];
+const mapBounds = {x:50,y:50,w:1600,h:1120};
+const roomProfiles = {
+  bay:{title:'Deployment Bay',purpose:'A large serviced space with a marked drone cradle and a facility-side console.',observation:'The bay is accessible from the remote link. Its markings appear intended to guide equipment placement, but their original conventions are unknown.'},
+  main:{title:'Maintenance Passage',purpose:'A long connecting passage with wall panels and service access points.',observation:'Several panels remain powered. Their labels do not match the expedition database.'},
+  storage:{title:'Storage Room',purpose:'A room containing racks, stored fixtures, and an unfamiliar alloy sample.',observation:'Some storage positions are empty. The remaining fixtures show no clear inventory standard.'},
+  observation:{title:'Observation Passage',purpose:'A wider side passage with a patterned wall section and an unusual surface imprint.',observation:'The wall feature is repeatable and carefully formed, but its use is not yet understood.'},
+  utility:{title:'Utility Room',purpose:'A machinery space containing active relay equipment and heavy service housings.',observation:'At least one local relay remains operational. The wider system it serves is not identified.'},
+  transit:{title:'Transit Station',purpose:'A station-like chamber with rails and a local routing console.',observation:'The local routing system has acknowledged the survey link. Its destinations and network layout remain unverified.'},
+  powerDistribution:{title:'Power Distribution Chamber',purpose:'A compact service chamber containing several distribution housings, insulated cable runs, and a central panel with steady indicator lights.',observation:'The equipment is active, but its power source and the systems supplied from here have not been traced. No controls have been changed.'}
+};
+const requiredSurveyIds = ['alloy','relay','imprint'];
+const solids = [
+  {x:470,y:160,w:105,h:32,type:'crate',label:'sealed cargo'},
+  {x:970,y:125,w:44,h:130,type:'rack',label:'storage rack'},
+  {x:1140,y:125,w:38,h:130,type:'rack',label:'storage rack'},
+  {x:945,y:555,w:65,h:100,type:'machine',label:'pump housing'},
+  {x:1160,y:555,w:48,h:120,type:'machine',label:'power housing'},
+  {x:555,y:640,w:48,h:42,type:'crate',label:'service case'},
+  {x:820,y:665,w:30,h:56,type:'pillar',label:'support'},
+  {x:1370,y:865,w:50,h:120,type:'pillar',label:'station support'},
+  {x:1170,y:865,w:32,h:100,type:'pillar',label:'station support'}
+];
+const targets = [
+  {id:'alloy',name:'Uncatalogued Alloy Sample',room:'Storage Room',roomId:'storage',category:'Material',required:true,x:1060,y:330,range:190,scanned:false,points:35,description:'The sample is integrated into a storage fixture. Its surface structure does not match the facility materials catalogue. Composition remains unresolved.',detail:'Material analysis stored. Sample composition remains unclassified.'},
+  {id:'relay',name:'Active Utility Relay',room:'Utility Room',roomId:'utility',category:'Machinery',required:true,x:1080,y:590,range:190,scanned:false,points:30,description:'A compact relay assembly is operating. Its outer casing is intact and the unit is drawing a small, steady amount of power.',detail:'Operational signature recorded. Relay remains active.'},
+  {id:'imprint',name:'Unusual Surface Imprint',room:'Observation Passage',roomId:'observation',category:'Surface Feature',required:true,x:690,y:620,range:190,scanned:false,points:40,description:'A section of the wall carries a repeated geometric impression beneath a thin transparent layer. Its purpose is unknown.',detail:'Surface pattern recorded. No interpretation assigned.'},
+  {id:'conduit',name:'Ceiling Conduit Junction',room:'Maintenance Passage',roomId:'main',category:'Infrastructure',required:false,x:735,y:270,range:175,scanned:false,points:15,description:'A bundled service conduit passes through a sealed junction. Readings indicate low electrical activity, but the connected systems cannot be identified from this position.',detail:'Conduit layout and low-level electrical activity recorded.'},
+  {id:'storageSeal',name:'Secondary Storage Seal',room:'Storage Room',roomId:'storage',category:'Mechanical Assembly',required:false,x:1190,y:335,range:175,scanned:false,points:20,description:'A flush-mounted mechanical seal is set into the storage wall. No accessible control surface or matching facility component has been identified.',detail:'Mechanical seal geometry recorded. Operating method unknown.'},
+  {id:'floorChannel',name:'Linear Floor Channel',room:'Observation Passage',roomId:'observation',category:'Structural Feature',required:false,x:775,y:730,range:170,scanned:false,points:20,description:'A narrow channel follows a straight path along the floor. Its surface is worn differently from the surrounding panels, though its function is not apparent.',detail:'Floor channel dimensions and surface variation recorded.'},
+  {id:'powerArray',name:'Distribution Housing Array',room:'Power Distribution Chamber',roomId:'powerDistribution',category:'Infrastructure',required:false,x:1470,y:635,range:185,scanned:false,points:30,description:'Several connected housings carry steady electrical signatures. The array appears to distribute power locally, but its upstream source and downstream loads are not identifiable from the available readings.',detail:'Power distribution array geometry and operating signatures recorded; connected systems remain unidentified.'}
+];
+const interactables = [
+  {id:'bayConsole',name:'Deployment Bay Console',x:195,y:325,range:105,kind:'bay'},
+  {id:'securityTerminal',name:'Local Service Terminal',x:785,y:555,range:76,kind:'terminal'},
+  {id:'transitTerminal',name:'Transit Routing Console',x:1445,y:1000,range:82,kind:'transit'},
+  {id:'alloySample',name:'Alloy Sample Fixture',x:1060,y:355,range:78,kind:'sample'},
+  {id:'serviceWingConsole',name:'Service Wing Access Console',x:1210,y:645,range:90,kind:'serviceDoor'}
+];
+const roomLabels = rooms.filter(r=>r.name);
+let state = {
+  x:290,y:260,dirX:1,dirY:0,battery:100,condition:100,data:0,scanned:[],visited:['bay'],
+  logs:[{time:'00:00',timestamp:new Date().toISOString(),text:'Remote link established. Drone systems responding normally.'}],
+  communications:[
+    {id:'welcome-briefing',from:'Dr. Mira Voss · Expedition Lead',text:'Welcome to the first survey shift. We are beginning with the accessible maintenance section. Keep the initial pass methodical: map the nearby spaces, document anything unfamiliar, and do not force access to systems we have not assessed.',category:'briefings',priority:'normal',timestamp:new Date(Date.now()-120000).toISOString(),read:false,archived:false},
+    {id:'drone-check',from:'Eli Navarro · Robotics',text:'Drone calibration looks good from here. Camera, illumination and scanner are all responding. The battery reserve is healthy. I will keep an eye on the link.',category:'technical',priority:'normal',timestamp:new Date(Date.now()-60000).toISOString(),read:false,archived:false},
+    {id:'external-monitor',from:'Facility Operations',text:'The structure remains quiet on the external monitors. No new transmission signatures have been identified.',category:'communications',priority:'normal',timestamp:new Date().toISOString(),read:false,archived:false}
+  ],
+  missionActive:false,routeUnlocked:false,terminalRead:false,serviceWingUnlocked:false,firstSurveyComplete:false,flashlight:true,scannerPulse:0,gameTime:0,lastSave:0,hubTab:'expedition',
+  carriedItems:[],recoveredItems:[],sampleCollected:false,lowBatteryNotified:false,researchPoints:0,upgrades:[],markedRooms:[],uiSettings:{touchControls:'auto',objectivesCollapsed:false},
+  sensorTitle:'No target selected',sensorText:'Move near an object and activate the scanner to inspect it.'
+};
+let keys = {}, mouse = {x:0,y:0}, camera = {x:0,y:0}, lastFrame = 0, toastTimer = null, hubTab='expedition', mapOpen=false, hudAccumulator=0;
+let dpr = Math.max(1,Math.min(2,window.devicePixelRatio||1));
+const messageView={category:'all',status:'all',sort:'newest',query:'',selectedId:null};
+
+function safeLoad(){
+ try{
+  const raw=localStorage.getItem(saveKey);if(!raw)return;
+  const saved=JSON.parse(raw);if(!saved||typeof saved!=='object')return;
+  state={...state,...saved};
+  state.scanned=Array.isArray(state.scanned)?state.scanned:[];
+  state.visited=Array.isArray(state.visited)?state.visited:['bay'];
+  state.logs=Array.isArray(state.logs)?state.logs:[];
+  state.communications=Array.isArray(state.communications)?state.communications:[];
+  state.communications=state.communications.map((m,i)=>({
+    id:m.id||('legacy-message-'+i+'-'+String(m.from||'sender').replace(/[^a-z0-9]/gi,'').slice(0,10)),
+    from:String(m.from||'Unknown sender'),text:String(m.text||''),
+    category:m.category||inferMessageCategory(m.from,m.text),priority:m.priority||'normal',
+    timestamp:(m.timestamp&&Number.isFinite(Date.parse(m.timestamp)))?new Date(m.timestamp).toISOString():null,
+    read:typeof m.read==='boolean'?m.read:true,archived:Boolean(m.archived),link:m.link||null,
+    legacyTimestamp:!(m.timestamp&&Number.isFinite(Date.parse(m.timestamp)))
+  }));
+  state.logs=state.logs.map((m)=>({...m,timestamp:(m.timestamp&&Number.isFinite(Date.parse(m.timestamp)))?new Date(m.timestamp).toISOString():null}));
+  state.markedRooms=Array.isArray(state.markedRooms)?state.markedRooms.filter(id=>rooms.some(r=>r.id===id&&r.name)):[];
+  state.uiSettings={touchControls:'auto',objectivesCollapsed:false,...(state.uiSettings||{})};
+  if(!['auto','show','hide'].includes(state.uiSettings.touchControls))state.uiSettings.touchControls='auto';
+  state.carriedItems=Array.isArray(state.carriedItems)?state.carriedItems:[];
+  state.recoveredItems=Array.isArray(state.recoveredItems)?state.recoveredItems:[];
+  state.upgrades=Array.isArray(state.upgrades)?state.upgrades:[];
+  state.data=Number.isFinite(Number(state.data))?Math.max(0,Number(state.data)):0;
+  state.researchPoints=Number.isFinite(Number(saved.researchPoints))?Math.max(0,Number(saved.researchPoints)):state.data;
+  state.sampleCollected=Boolean(state.sampleCollected||state.carriedItems.some(i=>i.id==='alloy-sample')||state.recoveredItems.some(i=>i.id==='alloy-sample'));
+  state.lowBatteryNotified=Boolean(state.lowBatteryNotified);
+  state.serviceWingUnlocked=Boolean(state.serviceWingUnlocked);
+  state.visited=state.visited.filter(id=>rooms.some(r=>r.id===id&&r.name));
+  if(!state.visited.includes('bay'))state.visited.unshift('bay');
+  targets.forEach(t=>t.scanned=state.scanned.includes(t.id));
+ }catch(e){console.warn('Could not load local save',e)}
+}
+function saveGame(silent=false){try{localStorage.setItem(saveKey,JSON.stringify(state));if(!silent)showToast('Expedition saved to this browser.');}catch(e){if(!silent)showToast('Browser storage is unavailable; progress may not persist.');}}
+function formatTimestamp(value){if(!value)return 'Date/time not recorded · imported from an earlier build';const d=new Date(value);if(!Number.isFinite(d.getTime()))return 'Date/time unavailable';return new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(d);}
+function inferMessageCategory(from,text){const s=(String(from||'')+' '+String(text||'')).toLowerCase();if(/scan record|sample|artifact|discovery|transit route|surface pattern|record acquired/.test(s))return 'discoveries';if(/mission|brief|survey shift|objective|expedition lead/.test(s))return 'briefings';if(/battery|telemetry|calibration|upgrade|drone|scanner|manipulator|system|power/.test(s))return 'technical';return 'communications';}
+function addMessage(from,text,category='communications',priority='normal',link=null){const message={id:'msg-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8),from,text,category,priority,timestamp:new Date().toISOString(),read:false,archived:false,link};state.communications.unshift(message);updateMessageBadge();saveGame(true);return message;}
+function unreadMessageCount(){return state.communications.filter(m=>!m.read&&!m.archived).length;}
+function updateMessageBadge(){const badge=$('unreadBadge');if(!badge)return;const count=unreadMessageCount();badge.textContent=count>99?'99+':String(count);badge.hidden=count===0;}
+function addLog(text){const stamp=new Date();const time=String(stamp.getHours()).padStart(2,'0')+':'+String(stamp.getMinutes()).padStart(2,'0');state.logs.unshift({time,timestamp:stamp.toISOString(),text});renderLog();saveGame(true)}
+function showToast(text){const t=$('toast');t.textContent=text;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600)}
+function scannedCount(){return state.scanned.length;}
+function requiredScannedCount(){return requiredSurveyIds.filter(id=>state.scanned.includes(id)).length;}
+function hasUpgrade(id){return state.upgrades.includes(id);}
+function awardData(amount){state.data+=amount;state.researchPoints+=amount;}
+function scanRange(target){return target.range+(hasUpgrade('scanner-calibration')?65:0);}
+function carryingSample(){return state.carriedItems.some(i=>i.id==='alloy-sample');}
+function recoveredSample(){return state.recoveredItems.some(i=>i.id==='alloy-sample');}
+function cargoCount(){return state.carriedItems.length;}
+const upgradeCatalog=[
+ {id:'scanner-calibration',name:'Scanner Calibration',cost:60,summary:'Extends scanner acquisition range by 65 m, making distant survey objects easier to document.'},
+ {id:'power-regulator',name:'Power Regulation',cost:45,summary:'Reduces movement and idle battery consumption by 25%.'}
+];
+function purchaseUpgrade(id){const upgrade=upgradeCatalog.find(u=>u.id===id);if(!upgrade)return;if(hasUpgrade(id)){showToast('This module is already installed.');return;}if(state.researchPoints<upgrade.cost){showToast('Not enough unspent research points for this module.');return;}state.researchPoints-=upgrade.cost;state.upgrades.push(id);addLog('Research completed: '+upgrade.name+' installed on the exploration drone.');addMessage('Eli Navarro · Robotics',upgrade.name+' is now installed. The drone configuration has been updated; field telemetry will reflect the new capability.','technical');showToast(upgrade.name+' installed.');saveGame(true);renderHub('research');updateHud();}
+function hubButton(label,action,primary=false){return `<button class="${primary?'primary-btn':'secondary-btn'}" data-action="${action}">${label}</button>`}
+function renderHub(tab=hubTab){hubTab=tab;document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));const done=scannedCount();const lastLog=state.logs[0]?.text||'No field records yet.';
+ if(tab==='expedition'){
+  hubContent.innerHTML=`<div class="hub-hero"><section class="hero-main"><div class="eyebrow">Expedition / AEI-01</div><h2>First Survey:<br>Access &amp; Maintenance</h2><p>An initial remote survey of the accessible interior. Establish a local map, document unfamiliar materials and functioning equipment, and locate the nearby transit infrastructure. The structure's full configuration remains undetermined.</p><div class="hero-actions">${hubButton(state.missionActive?'Resume Drone Link':'Deploy Exploration Drone', 'deploy',true)}${hubButton('Review Mission Brief','brief')}</div></section><aside class="hero-side"><div class="side-head"><h3>Expedition status</h3><span class="status-pill">${state.missionActive?'LINK ACTIVE':'READY'}</span></div><div class="statline"><span>Designation</span><strong>AEI-01</strong></div><div class="statline"><span>Survey sector</span><strong>Access &amp; Maintenance</strong></div><div class="statline"><span>Targets analyzed</span><strong>${requiredScannedCount()} / 3</strong></div><div class="statline"><span>Research data</span><strong>${state.data} points</strong></div><div><div class="statline" style="border:0;padding-bottom:3px"><span>Main survey progress</span><strong>${Math.round(requiredScannedCount()/3*100)}%</strong></div><div class="progress-track"><div class="progress-fill" style="width:${requiredScannedCount()/3*100}%"></div></div></div><div class="statline"><span>Drone battery</span><strong>${Math.round(state.battery)}%</strong></div><div class="statline"><span>Recovered artifacts</span><strong>${state.recoveredItems.length}</strong></div></aside></div><div class="hub-cards"><article class="hub-card"><div class="card-icon">⌖</div><h3>Remote operations</h3><p>Control the drone from this facility. All field actions are transmitted through the remote link.</p></article><article class="hub-card"><div class="card-icon">◈</div><h3>Unclassified structure</h3><p>AEI-01 is a provisional human designation. Its builders, purpose and full extent have not been established.</p></article><article class="hub-card"><div class="card-icon">▤</div><h3>Last field record</h3><p>${escapeHtml(lastLog)}</p></article></div>`;
+ } else if(tab==='drone'){
+  hubContent.innerHTML=`<div class="panel-page"><h2>Exploration Drone / Mk.I</h2><article class="hub-card"><div class="eyebrow">Remote survey platform</div><h3>Systems overview</h3><p>A compact, non-combat exploration unit equipped for visual inspection, illumination, environmental readings and data recovery. The first build uses a simple ground movement system.</p><div class="detail-row"><span>Camera system</span><strong>Operational</strong></div><div class="detail-row"><span>Illumination</span><strong>${state.flashlight?'Enabled':'Standby'}</strong></div><div class="detail-row"><span>Survey scanner</span><strong>Operational</strong></div><div class="detail-row"><span>Battery reserve</span><strong>${Math.round(state.battery)}%</strong></div><div class="detail-row"><span>Condition</span><strong>${Math.round(state.condition)}%</strong></div><div class="detail-row"><span>Manipulator cargo</span><strong>${cargoCount()} / 1</strong></div><div class="detail-row"><span>Recovered artifacts</span><strong>${state.recoveredItems.length}</strong></div><div class="detail-row"><span>Research modules</span><strong>${state.upgrades.length} installed</strong></div></article><article class="hub-card"><div class="eyebrow">Installed equipment</div><h3>Standard exploration package</h3><p>Optical camera, directional lamp, passive environmental sensors, local mapping memory and a short-range manipulator. The manipulator can carry one small sample at a time. Larger objects remain in place until suitable recovery equipment is developed.</p></article></div>`;
+ } else if(tab==='map'){
+  const chartedRooms=rooms.filter(r=>state.visited.includes(r.id)&&r.name).map(r=>{const p=roomProfiles[r.id];const found=targets.filter(t=>t.roomId===r.id&&state.scanned.includes(t.id)).length;const marked=state.markedRooms.includes(r.id);return `<div class="entry"><strong>${escapeHtml(p.title)}</strong><p>${escapeHtml(p.purpose)}<br>${escapeHtml(p.observation)}<br><span class="muted">${found} recorded point${found===1?'':'s'} · ${marked?'Marked for follow-up':'No personal marker'}</span></p><button class="mini-btn map-room-action" data-action="toggleRoomMarker" data-room="${r.id}">${marked?'Remove marker':'Mark for follow-up'}</button></div>`;}).join('')||'<p class="small-copy">No rooms charted yet.</p>';
+  hubContent.innerHTML=`<div class="panel-page"><h2>Survey Cartography</h2><article class="hub-card"><div class="eyebrow">Access &amp; Maintenance · Service Wing</div><h3>Charted rooms</h3><p>The map records places the drone has physically entered. Blank areas are not assumed to be empty or inaccessible.</p><div class="detail-row"><span>Areas charted</span><strong>${state.visited.length} / ${rooms.filter(r=>r.name).length}</strong></div><div class="detail-row"><span>Transit route</span><strong>${state.routeUnlocked?'Connected':'Unverified'}</strong></div>${hubButton('Open survey map','openmap')}</article><article class="hub-card"><div class="eyebrow">Room records</div>${chartedRooms}</article><article class="hub-card"><h3>Mapping note</h3><p>Room labels and boundaries are human survey annotations. They should not be treated as confirmed designations used by the structure's original builders. Personal markers highlight rooms you want to revisit; they do not change the facility's official survey record.</p></article></div>`;
+ } else if(tab==='database'){
+  const entries=targets.filter(t=>state.scanned.includes(t.id)).map(t=>`<div class="entry"><strong>${escapeHtml(t.name)}</strong><p><span class="muted">${escapeHtml(t.category||'Survey Record')} · ${escapeHtml(t.room)}</span><br>${escapeHtml(t.detail)}</p></div>`).join('')||'<p class="small-copy">No scan records available. Use the drone scanner near an unfamiliar object or system.</p>';
+   const recovered=state.recoveredItems.map(i=>`<div class="entry"><strong>${escapeHtml(i.name)}</strong><p>${escapeHtml(i.description||'Recovered and secured at the research facility.')}</p></div>`).join('')||'<p class="small-copy">No physical artifacts have been returned to the facility.</p>';
+  hubContent.innerHTML=`<div class="panel-page"><h2>Research Database</h2><article class="hub-card"><div class="eyebrow">Recovered field records</div><h3>${done} analyzed object${done===1?'':'s'}</h3><p>Research data recovered: <strong>${state.data}</strong> points. Scan results are descriptive only; no conclusions about the structure's builders or purpose have been assigned.</p>${entries}</article><article class="hub-card"><div class="eyebrow">Survey protocol</div><h3>Initial documentation</h3><p>Identify material signatures, record active equipment, and document unusual surface features. The scanner will not automatically interpret the function of unfamiliar technology.</p><div class="detail-row"><span>Main targets</span><strong>${requiredScannedCount()} / 3</strong></div><div class="detail-row"><span>Optional points recorded</span><strong>${Math.max(0,done-requiredScannedCount())}</strong></div></article><article class="hub-card"><div class="eyebrow">Physical collection</div><h3>${state.recoveredItems.length} recovered artifact${state.recoveredItems.length===1?'':'s'}</h3>${recovered}</article></div>`;
+ } else if(tab==='journal'){
+  const roomEntries=rooms.filter(r=>r.name&&state.visited.includes(r.id)).map(r=>{const p=roomProfiles[r.id];return `<div class="entry"><div class="message-list-top"><strong>${escapeHtml(p.title)}</strong><span class="message-tag">OBSERVED</span></div><p>${escapeHtml(p.purpose)}<br>${escapeHtml(p.observation)}</p></div>`;}).join('')||'<p class="small-copy">No areas have been entered and recorded yet.</p>';
+  const discoveryEntries=targets.filter(t=>state.scanned.includes(t.id)).map(t=>`<div class="entry"><div class="message-list-top"><strong>${escapeHtml(t.name)}</strong><span class="message-tag">RECORDED</span></div><p><span class="muted">${escapeHtml(t.category)} · ${escapeHtml(t.room)}</span><br>${escapeHtml(t.description)}<br><span class="muted">Current interpretation: unresolved. The field record has been preserved without assigning an unsupported explanation.</span></p></div>`).join('')||'<p class="small-copy">No unfamiliar objects or systems have been recorded yet.</p>';
+  const recoveredEntries=state.recoveredItems.map(i=>`<div class="entry"><div class="message-list-top"><strong>${escapeHtml(i.name)}</strong><span class="message-tag">RECOVERED</span></div><p>${escapeHtml(i.description||'Physical specimen secured at the facility.')}</p></div>`).join('')||'<p class="small-copy">No physical specimens have been recovered.</p>';
+  hubContent.innerHTML=`<div class="panel-page"><h2>Discovery Journal</h2><article class="hub-card"><div class="eyebrow">Places encountered</div><h3>${state.visited.filter(id=>rooms.some(r=>r.id===id&&r.name)).length} charted areas</h3><p>Human survey notes about areas the drone has physically entered. These descriptions are observations, not confirmed statements about the installation's original design.</p>${roomEntries}</article><article class="hub-card"><div class="eyebrow">Recorded points of interest</div><h3>${state.scanned.length} field records</h3><p>Scans are preserved as observations. Unresolved functions remain unresolved until evidence supports a conclusion.</p>${discoveryEntries}</article><article class="hub-card" style="grid-column:1/-1"><div class="eyebrow">Physical recovery</div><h3>${state.recoveredItems.length} recovered specimens</h3>${recoveredEntries}</article></div>`;
+ } else if(tab==='research'){
+  const upgradeCards=upgradeCatalog.map(u=>{const owned=hasUpgrade(u.id);const affordable=state.researchPoints>=u.cost;return `<article class="hub-card upgrade-card"><div class="eyebrow">Drone module</div><h3>${escapeHtml(u.name)}</h3><p>${escapeHtml(u.summary)}</p><div class="detail-row"><span>Research cost</span><strong>${u.cost} points</strong></div><div class="detail-row"><span>Status</span><strong>${owned?'Installed':(affordable?'Available':'Insufficient points')}</strong></div>${owned?'<span class="status-pill">INSTALLED</span>':`<button class="${affordable?'primary-btn':'secondary-btn'}" data-action="research" data-upgrade="${u.id}" ${affordable?'':'disabled'}>Install module</button>`}</article>`;}).join('');
+  hubContent.innerHTML=`<div class="panel-page"><h2>Research &amp; Development</h2><article class="hub-card"><div class="eyebrow">Available research</div><h3>${state.researchPoints} unspent points</h3><p>Survey records contribute research points. Points can be spent on practical drone improvements. Total archived data remains recorded separately.</p><div class="detail-row"><span>Total data archived</span><strong>${state.data}</strong></div><div class="detail-row"><span>Completed modules</span><strong>${state.upgrades.length} / ${upgradeCatalog.length}</strong></div></article>${upgradeCards}</div>`;
+ } else if(tab==='communications'){
+  renderCommunications();
+ } else if(tab==='settings'){
+  const touchLabel=state.uiSettings.touchControls==='auto'?'Automatic detection':(state.uiSettings.touchControls==='show'?'Always show':'Always hide');
+  hubContent.innerHTML=`<div class="panel-page"><h2>Field System Settings</h2><article class="hub-card"><div class="eyebrow">Input preferences</div><h3>Touchscreen controls</h3><p>Automatic mode shows on-screen controls only when the device reports touch input. A narrow desktop window by itself will not activate them.</p><div class="setting-row"><span>Control visibility</span><select id="touchControlsSetting" class="setting-select" aria-label="Touchscreen control visibility"><option value="auto" ${state.uiSettings.touchControls==='auto'?'selected':''}>Automatic</option><option value="show" ${state.uiSettings.touchControls==='show'?'selected':''}>Always show</option><option value="hide" ${state.uiSettings.touchControls==='hide'?'selected':''}>Always hide</option></select></div><div class="detail-row"><span>Current preference</span><strong>${touchLabel}</strong></div></article><article class="hub-card"><div class="eyebrow">Interface preferences</div><h3>Objective tracker</h3><p>The in-field objective list can be collapsed to keep more of the optical feed visible. The setting is remembered in this browser.</p><div class="detail-row"><span>Tracker currently</span><strong>${state.uiSettings.objectivesCollapsed?'Collapsed':'Expanded'}</strong></div><button class="secondary-btn" data-action="toggleObjectiveSetting">${state.uiSettings.objectivesCollapsed?'Expand':'Collapse'} tracker by default</button></article><article class="hub-card" style="grid-column:1/-1"><div class="eyebrow">Data and timestamps</div><h3>Local time display</h3><p>Message and field-record timestamps use this device's local date and time settings. Messages carried over from earlier builds did not store send times, so those entries are identified as legacy records with unavailable timestamps.</p></article></div>`;
+ } else if(tab==='logbook'){
+  hubContent.innerHTML=`<div class="panel-page"><h2>Expedition Logbook</h2><article class="hub-card" style="grid-column:1/-1"><div class="eyebrow">Field activity record</div>${state.logs.map(m=>`<div class="entry"><strong>${escapeHtml(formatTimestamp(m.timestamp))} · Field record${m.timestamp?'':' · legacy'}</strong><p>${escapeHtml(m.text)}</p></div>`).join('')||'<p class="small-copy">No records yet.</p>'}</article></div>`;
+ } else if(tab==='patchnotes'){
+  hubContent.innerHTML=`<div class="panel-page"><h2>Patch Notes</h2>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.4.0</div><h3>Infrastructure &amp; Exploration Update</h3>
+    <div class="patch-group"><strong>Added</strong><p>A restricted service wing branching from the Utility Room, a Power Distribution Chamber with new visual equipment, a service-access console, and a new optional scan record for the distribution housing array. Charted room entry now generates a dated discovery message.</p></div>
+    <div class="patch-group"><strong>Changed</strong><p>The survey map now scales to show the new wing. The service-wing access console requires the local maintenance index and completion of the three primary survey scans before it will open.</p></div>
+    <div class="patch-group"><strong>Removed</strong><p>None.</p></div>
+    <div class="patch-group"><strong>Fixed</strong><p>Older saves receive the new access state safely, defaulting the added door to locked. New rooms and discoveries are added without resetting prior expedition records.</p></div>
+   </article>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Previous build · 0.3.1</div><h3>Quality-of-Life Update</h3>
+    <div class="patch-group"><strong>Added</strong><p>Communications Center filters and search, message archive and restore tools, timestamps for new messages, Discovery Journal, persistent room markers, collapsible objectives, drone status details, and touchscreen preferences.</p></div><div class="patch-group"><strong>Changed</strong><p>Messages are organized into briefings, communications, discoveries, and technical reports. Touch controls use automatic device detection or a manual setting.</p></div><div class="patch-group"><strong>Removed</strong><p>Small-window-only touch control activation was removed.</p></div><div class="patch-group"><strong>Fixed</strong><p>Touch movement supports separate simultaneous inputs and safely clears held controls when focus is lost. Older messages without timestamps remain labeled as undated.</p></div>
+   </article>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Previous build · 0.3.0</div><h3>Exploration Update</h3>
+    <div class="patch-group"><strong>Added</strong><p>Optional points of interest, room records, Research &amp; Development, scanner calibration and power regulation modules, and exploration journal information.</p></div><div class="patch-group"><strong>Changed</strong><p>Survey scanning distinguishes required targets from optional discoveries, and the map records only visited rooms.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>Reported camera boundary and collision route issues addressed in that release.</p></div>
+   </article>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Previous build · 0.2.1</div><h3>Patch Notes Interface</h3>
+    <div class="patch-group"><strong>Added</strong><p>An in-game Patch Notes tab was added to the facility navigation.</p></div><div class="patch-group"><strong>Changed</strong><p>None.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>None recorded in this release.</p></div>
+   </article>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Previous build · 0.2.0</div><h3>Recovery &amp; Persistence Update</h3>
+    <div class="patch-group"><strong>Added</strong><p>Physical alloy-sample recovery, one-slot manipulator cargo, a facility Research Database, recovery-related communications, drone servicing at the bay, and low-battery warnings.</p></div><div class="patch-group"><strong>Changed</strong><p>Movement, camera boundaries, storage-room collision, and save initialization were adjusted to support recovery and carry existing expedition data forward.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>Camera boundary and storage-room collision problems addressed in that release.</p></div>
+   </article>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Player information</div><p>Patch notes describe changes included in each numbered build. Your expedition save is stored in this browser; clearing browser data may remove it.</p></article>
+  </div>`;
+ }
+}
+function filteredMessages(){
+ const q=messageView.query.trim().toLowerCase();
+ let list=state.communications.filter(m=>{
+  if(messageView.category!=='all'&&m.category!==messageView.category)return false;
+  if(messageView.status==='unread'&&(m.read||m.archived))return false;
+  if(messageView.status==='archived'&&!m.archived)return false;
+  if(messageView.status==='read'&&(!m.read||m.archived))return false;
+  if(q&&!((m.from+' '+m.text).toLowerCase().includes(q)))return false;
+  return true;
+ });
+ list.sort((a,b)=>{const ta=a.timestamp?Date.parse(a.timestamp):0,tb=b.timestamp?Date.parse(b.timestamp):0;return messageView.sort==='oldest'?ta-tb:tb-ta;});
+ return list;
+}
+function messageCategoryLabel(category){return ({communications:'Communications',briefings:'Mission briefing',discoveries:'Discovery',technical:'Technical report'})[category]||'Communications';}
+function renderMessageList(){
+ const host=hubContent.querySelector('.message-list');if(!host)return;
+ const list=filteredMessages();
+ host.innerHTML=list.map(m=>`<button class="message-list-item ${messageView.selectedId===m.id?'selected':''}" data-action="selectMessage" data-message="${escapeHtml(m.id)}"><div class="message-list-top"><span class="message-sender">${escapeHtml(m.from)}</span><time class="message-list-time">${escapeHtml(m.timestamp?formatTimestamp(m.timestamp):'Time not recorded')}</time></div><div class="message-preview">${escapeHtml(m.text)}</div><div class="message-tags"><span class="message-tag">${escapeHtml(messageCategoryLabel(m.category))}</span>${!m.read?'<span class="message-tag unread">UNREAD</span>':''}${m.priority==='high'?'<span class="message-tag priority">PRIORITY</span>':''}${m.archived?'<span class="message-tag">ARCHIVED</span>':''}</div></button>`).join('')||'<div class="message-empty">No messages match these filters. Try another category or search term.</div>';
+ const count=hubContent.querySelector('#messageCount');if(count)count.textContent=`${list.length} message${list.length===1?'':'s'} shown · ${unreadMessageCount()} unread in inbox`;
+}
+function renderMessageDetail(){
+ const host=hubContent.querySelector('.message-detail');if(!host)return;
+ const m=state.communications.find(x=>x.id===messageView.selectedId);
+ if(!m){host.innerHTML='<div class="message-empty">Select a message from the list to read it. Messages remain here until you choose to archive them.</div>';return;}
+ host.innerHTML=`<div class="eyebrow">${escapeHtml(messageCategoryLabel(m.category))}${m.priority==='high'?' · PRIORITY':''}</div><h3>${escapeHtml(m.from)}</h3><div class="message-detail-meta"><div><strong>Sent:</strong> ${escapeHtml(formatTimestamp(m.timestamp))}</div><div><strong>Time source:</strong> ${m.timestamp?'Saved message timestamp · local display':'Original send time was not saved in the previous build'}</div><div><strong>Status:</strong> ${m.archived?'Archived':(m.read?'Read':'Unread')}</div></div><div class="message-body">${escapeHtml(m.text)}</div><div class="message-actions"><button class="secondary-btn" data-action="toggleMessageRead" data-message="${escapeHtml(m.id)}">Mark ${m.read?'unread':'read'}</button><button class="secondary-btn" data-action="toggleMessageArchive" data-message="${escapeHtml(m.id)}">${m.archived?'Restore to inbox':'Archive message'}</button>${m.link&&m.link.type==='journal'?'<button class="primary-btn" data-action="openMessageRecord" data-message="'+escapeHtml(m.id)+'">Open Discovery Journal</button>':(m.link&&m.link.type==='database'?'<button class="primary-btn" data-action="openMessageRecord" data-message="'+escapeHtml(m.id)+'">Open Research Database</button>':'')}</div>`;
+}
+function renderCommunications(){
+ const selected=state.communications.find(m=>m.id===messageView.selectedId);
+ if(!selected)messageView.selectedId=null;
+ hubContent.innerHTML=`<div class="panel-page"><h2>Communications Center</h2><div class="message-layout"><section class="message-panel"><div class="eyebrow">Remote operations channel</div><h3>Inbox &amp; archive</h3><div class="message-toolbar"><input id="messageSearch" class="message-search" type="search" placeholder="Search sender or message text" value="${escapeHtml(messageView.query)}" aria-label="Search messages"><select id="messageCategory" aria-label="Filter message category"><option value="all">All categories</option><option value="briefings" ${messageView.category==='briefings'?'selected':''}>Mission briefings</option><option value="communications" ${messageView.category==='communications'?'selected':''}>Communications</option><option value="discoveries" ${messageView.category==='discoveries'?'selected':''}>Discoveries</option><option value="technical" ${messageView.category==='technical'?'selected':''}>Technical reports</option></select><select id="messageStatus" aria-label="Filter message status"><option value="all" ${messageView.status==='all'?'selected':''}>All messages</option><option value="unread" ${messageView.status==='unread'?'selected':''}>Unread only</option><option value="read" ${messageView.status==='read'?'selected':''}>Read only</option><option value="archived" ${messageView.status==='archived'?'selected':''}>Archived</option></select><select id="messageSort" aria-label="Sort messages"><option value="newest" ${messageView.sort==='newest'?'selected':''}>Newest first</option><option value="oldest" ${messageView.sort==='oldest'?'selected':''}>Oldest first</option></select></div><div class="message-list" role="list" aria-label="Messages"></div><div class="message-count" id="messageCount"></div><div class="message-actions"><button class="secondary-btn" data-action="archiveReadMessages">Archive read messages</button></div></section><section class="message-panel message-detail" aria-live="polite"></section></div></div>`;
+ renderMessageList();renderMessageDetail();updateMessageBadge();
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function startMission(){state.missionActive=true;facility.style.display='none';game.style.display='grid';resizeCanvas();addLog('Drone link engaged. Initial survey of the Access & Maintenance Sector is underway.');updateHud();renderHub();}
+function returnFacility(){state.missionActive=false;saveGame(true);game.style.display='none';facility.style.display='block';closeAllModals();renderHub('expedition');}
+function openModal(id){$(id).classList.add('open');if(id==='mapModal')drawMap();if(id==='logModal')renderLog();}
+function closeAllModals(){document.querySelectorAll('.modal-backdrop').forEach(m=>m.classList.remove('open'));}
+function renderLog(){$('logContent').innerHTML=state.logs.map(m=>`<div class="log-entry"><time>${escapeHtml(formatTimestamp(m.timestamp))}</time><p>${escapeHtml(m.text)}</p></div>`).join('')||'<p class="small-copy">No field records yet.</p>';}
+
+// Geometry and movement
+function insideRect(x,y,r,pad=0){return x>=r.x+pad&&x<=r.x+r.w-pad&&y>=r.y+pad&&y<=r.y+r.h-pad;}
+function pointOnFloor(x,y){return rooms.some(r=>insideRect(x,y,r,0));}
+function blocked(x,y){for(const s of solids){if(x>s.x-14&&x<s.x+s.w+14&&y>s.y-14&&y<s.y+s.h+14)return true;}if(!state.routeUnlocked&&x>1180&&x<1300&&y>800&&y<820)return true;if(!state.serviceWingUnlocked&&x>1258&&x<1282&&y>566&&y<724)return true;return false;}
+function canStand(x,y){const r=13;const pts=[[x,y],[x-r,y],[x+r,y],[x,y-r],[x,y+r],[x-r*.7,y-r*.7],[x+r*.7,y-r*.7],[x-r*.7,y+r*.7],[x+r*.7,y+r*.7]];return pts.every(([px,py])=>pointOnFloor(px,py)&&!blocked(px,py));}
+function currentRoom(){return rooms.find(r=>insideRect(state.x,state.y,r,0)&&r.name)||null;}
+function discoverRoom(){const room=currentRoom();if(room&&!state.visited.includes(room.id)){state.visited.push(room.id);addLog('New area charted: '+room.name+'.');addMessage('Dr. Mira Voss · Expedition Lead','The drone has entered a newly charted area: '+room.name+'. Room dimensions and visible infrastructure have been added to the survey record.','discoveries','normal',{type:'journal',id:room.id});showToast('Area charted: '+room.name);updateHud();saveGame(true);}}
+function nearbyInteractable(){let best=null,dist=1e9;for(const o of interactables){if(o.kind==='sample'&&(!state.scanned.includes('alloy')||carryingSample()||recoveredSample()))continue;const d=Math.hypot(state.x-o.x,state.y-o.y);if(d<o.range&&d<dist){best=o;dist=d;}}return best;}
+function nearestTarget(){let best=null,dist=1e9;for(const t of targets){if(state.scanned.includes(t.id))continue;const d=Math.hypot(state.x-t.x,state.y-t.y);if(d<dist){best=t;dist=d;}}return best?{target:best,distance:dist}:null;}
+function pulseScanner(){if(state.battery<=0){showToast('Battery reserve depleted. Return to the deployment bay.');return;}state.battery=Math.max(0,state.battery-.35);state.scannerPulse=.7;const found=targets.map(t=>({t,d:Math.hypot(state.x-t.x,state.y-t.y)})).filter(v=>v.d<=scanRange(v.t)&&!state.scanned.includes(v.t.id)).sort((a,b)=>a.d-b.d)[0];if(found){const t=found.t;t.scanned=true;state.scanned.push(t.id);awardData(t.points);state.sensorTitle=t.name;state.sensorText=t.description;addMessage('Dr. Mira Voss · Expedition Lead','We have received the new scan record: '+t.name+'. Good work. Keep the original reading intact; we can review its meaning back at the facility.','discoveries','normal',{type:'journal',id:t.id});addLog('Scanner record acquired: '+t.name+'. '+t.detail);showToast((t.required?'Survey record':'Point of interest')+' · '+t.name);if(requiredScannedCount()===3&&!state.firstSurveyComplete){state.firstSurveyComplete=true;addMessage('Eli Navarro · Robotics','All three local survey targets are now in the archive. The transit routing console may be accessible. I am seeing a response from the station systems.','briefings','high');addLog('Initial local survey complete. Transit station routing console is now available.');showToast('Local survey complete · Transit access can be investigated.');}updateHud();saveGame(true);}else{const near=nearestTarget();if(near&&near.distance<320){state.sensorTitle='Unresolved sensor return';state.sensorText=near.target.name+' is nearby, but remains outside the current acquisition range. Move closer.';}else{state.sensorTitle='No target in acquisition range';state.sensorText='The scan returned no unfamiliar objects within the current acquisition radius.';}showToast('Scanner pulse complete · No new record acquired.');}updateHud();}
+function interact(){const o=nearbyInteractable();if(!o){showToast('No accessible interface within reach.');return;}if(o.kind==='bay'){
+  if(state.carriedItems.length){const returned=state.carriedItems.splice(0);state.recoveredItems.push(...returned);const bonus=returned.length*20;awardData(bonus);returned.forEach(item=>addLog('Physical artifact secured at the research facility: '+item.name+'.'));addMessage('Dr. Mira Voss · Expedition Lead','The recovered sample has been transferred to the facility collection. The original field scan and the physical specimen are now available for analysis.','discoveries');state.sensorTitle='Recovery complete';state.sensorText='The carried specimen has been transferred into facility custody and added to the research collection.';showToast('Artifact recovered at facility · +'+bonus+' research data');
+  }
+  addLog('Drone returned to the deployment bay. Field connection safely suspended.');state.battery=100;state.condition=100;state.lowBatteryNotified=false;showToast('Drone recovered · Systems serviced at the facility.');returnFacility();}
+ else if(o.kind==='sample'){if(!state.scanned.includes('alloy')){showToast('The fixture must be scanned before its sample can be removed.');return;}if(cargoCount()>=1){showToast('Manipulator cargo capacity reached. Return to the facility first.');return;}const item={id:'alloy-sample',name:'Uncatalogued Alloy Sample',source:'Storage Room',description:'A small fragment removed from the storage fixture after its field scan. Its composition remains unresolved.'};state.carriedItems.push(item);state.sampleCollected=true;state.sensorTitle='Sample secured';state.sensorText='A small physical fragment has been secured in the manipulator. Return it to the deployment bay to transfer it to the facility collection.';addLog('Physical sample collected: Uncatalogued Alloy Sample. Cargo capacity: 1 / 1.');addMessage('Eli Navarro · Robotics','Manipulator telemetry confirms the sample is secured. Cargo capacity is now occupied. Bring it back to the deployment bay and we can transfer it into the collection. Watch the return route.','technical');showToast('Sample secured · Return to the deployment bay.');}
+ else if(o.kind==='terminal'){if(!state.terminalRead){state.terminalRead=true;awardData(10);addLog('Local service terminal accessed. A fragmentary maintenance index was recovered; several references could not be resolved.');state.sensorTitle='Local Service Terminal';state.sensorText='A maintenance index is available. Its file structure is readable, but many labels are not recognized by the expedition database.';showToast('Maintenance index recovered · +10 data');}else{showToast('The service terminal has no additional readable records.');}}
+ else if(o.kind==='transit'){if(requiredScannedCount()<3){showToast('Routing console remains unresponsive. Complete the three main survey targets first.');return;}if(!state.routeUnlocked){state.routeUnlocked=true;awardData(25);addLog('Transit routing console accepted the local survey link. A route indicator is now active beyond the station.');addMessage('Dr. Mira Voss · Expedition Lead','The transit system has acknowledged the local survey network. Do not assume the route destination or wider network layout yet. We will plan the next survey after reviewing the recovered data.','discoveries','high');state.sensorTitle='Transit Routing Console';state.sensorText='A local route connection has been established. The destination beyond the station remains unverified.';showToast('Transit route connected · New passage accessible.');}else{showToast('Local transit route is connected. Further destinations remain unverified.');}}
+  else if(o.kind==='serviceDoor'){if(state.serviceWingUnlocked){showToast('Service wing access is already open.');state.sensorTitle='Service Wing Access';state.sensorText='The access barrier has retracted. The newly opened service passage leads into the Power Distribution Chamber.';}else if(!state.terminalRead||requiredScannedCount()<3){showToast('Access remains restricted. Recover the local maintenance index and complete the main survey first.');state.sensorTitle='Service Wing Access · Restricted';state.sensorText='The console requests the local maintenance index and completed survey records. No access granted.';}else{state.serviceWingUnlocked=true;awardData(15);addLog('Service wing access granted. The barrier retracted, opening a previously inaccessible passage.');addMessage('Eli Navarro · Robotics','The access console accepted your survey credentials and maintenance index. A door has opened to a service chamber beyond the utility room. The new room is now available for inspection.','communications','normal');state.sensorTitle='Service Wing Access · Granted';state.sensorText='The barrier has retracted. An adjoining service chamber is accessible; its systems have not yet been assessed.';showToast('Service wing access granted · New chamber opened.');}}
+ updateHud();saveGame(true);
+}
+
+function resizeCanvas(){const rect=viewport.getBoundingClientRect();if(rect.width<10||rect.height<10)return;dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);}
+function drawFloor(r){ctx.fillStyle=(r.id==='bay')?'#25343b':(r.id==='transit'?'#202f37':'#202c33');ctx.fillRect(r.x,r.y,r.w,r.h);ctx.save();ctx.beginPath();ctx.rect(r.x,r.y,r.w,r.h);ctx.clip();ctx.strokeStyle='#34444b';ctx.lineWidth=1;const step=42;for(let x=Math.floor(r.x/step)*step;x<r.x+r.w;x+=step){ctx.beginPath();ctx.moveTo(x,r.y);ctx.lineTo(x,r.y+r.h);ctx.stroke();}for(let y=Math.floor(r.y/step)*step;y<r.y+r.h;y+=step){ctx.beginPath();ctx.moveTo(r.x,y);ctx.lineTo(r.x+r.w,y);ctx.stroke();}ctx.strokeStyle='#111d23';ctx.lineWidth=2;for(let x=r.x+9;x<r.x+r.w;x+=step){for(let y=r.y+9;y<r.y+r.h;y+=step){ctx.strokeRect(x,y,step-18,step-18);}}ctx.restore();ctx.strokeStyle='#71818a';ctx.lineWidth=5;ctx.strokeRect(r.x+2.5,r.y+2.5,r.w-5,r.h-5);ctx.strokeStyle='#a4b4ba';ctx.lineWidth=1;ctx.strokeRect(r.x+7,r.y+7,r.w-14,r.h-14);}
+function drawRoomDetails(){ctx.save();ctx.textAlign='left';ctx.font='600 10px ui-monospace,monospace';for(const r of roomLabels){ctx.fillStyle='#78909a';ctx.fillText(r.name,r.x+18,r.y+24);}ctx.restore();
+  // Power Distribution Chamber equipment: cable trays and service housings.
+  ctx.save();ctx.strokeStyle='#5e737a';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(1385,535);ctx.lineTo(1535,535);ctx.lineTo(1535,745);ctx.stroke();ctx.beginPath();ctx.moveTo(1385,775);ctx.lineTo(1385,535);ctx.stroke();ctx.fillStyle='#394b52';ctx.fillRect(1400,565,54,105);ctx.fillRect(1480,565,54,105);ctx.fillStyle='#71868b';ctx.strokeStyle='#a0b4b9';ctx.lineWidth=2;ctx.strokeRect(1400,565,54,105);ctx.strokeRect(1480,565,54,105);for(const [x,y] of [[1412,578],[1426,578],[1440,578],[1492,578],[1506,578],[1520,578]]){ctx.fillStyle='#76d4d2';ctx.fillRect(x,y,5,5);}ctx.fillStyle='#24353c';ctx.fillRect(1430,690,48,55);ctx.strokeStyle='#8a9ba0';ctx.strokeRect(1430,690,48,55);ctx.fillStyle='#7bc9bd';ctx.fillRect(1441,702,24,4);ctx.fillRect(1441,715,24,4);ctx.restore();
+ // Bay markings
+ ctx.save();ctx.strokeStyle='#82969b';ctx.lineWidth=2;ctx.strokeRect(125,185,245,145);ctx.strokeStyle='#bd9e62';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(140,352);ctx.lineTo(355,352);ctx.stroke();ctx.fillStyle='#82979f';ctx.font='10px ui-monospace,monospace';ctx.fillText('DRONE CRADLE  /  01',145,177);ctx.restore();
+ // Storage shelves and utility conduits
+ ctx.save();for(const x of [990,1160]){ctx.fillStyle='#394950';ctx.fillRect(x,120,30,140);ctx.strokeStyle='#697c82';ctx.strokeRect(x,120,30,140);for(let y=138;y<250;y+=36){ctx.strokeStyle='#809297';ctx.beginPath();ctx.moveTo(x+3,y);ctx.lineTo(x+27,y);ctx.stroke();}}ctx.fillStyle='#53636a';ctx.fillRect(1010,535,45,150);ctx.fillStyle='#71858b';ctx.fillRect(1018,544,29,132);ctx.strokeStyle='#a0b4b9';ctx.strokeRect(1018,544,29,132);ctx.fillStyle='#4b5e66';ctx.fillRect(1120,540,24,95);ctx.fillStyle='#85999d';ctx.fillRect(1124,548,16,78);ctx.restore();
+ // Wall panels and low lighting
+ ctx.save();for(const [x,y] of [[430,238],[610,238],[835,238],[700,520],[850,520],[980,520],[1200,695],[1210,830]]){ctx.fillStyle='#50636a';ctx.fillRect(x,y,26,8);ctx.fillStyle='#7bc9bd';ctx.fillRect(x+4,y+2,5,2);ctx.fillStyle='#b8c6c6';ctx.fillRect(x+14,y+2,7,2);}ctx.restore();
+ // Observation patterned wall patch
+ ctx.save();ctx.fillStyle='#59686c';ctx.fillRect(648,585,76,11);ctx.fillStyle='#9aada9';for(let i=0;i<8;i++){ctx.fillRect(653+i*8,588,4,5);}ctx.restore();
+ // Transit rails
+ ctx.save();ctx.fillStyle='#161f24';ctx.fillRect(1135,895,350,72);ctx.fillStyle='#84949a';ctx.fillRect(1135,900,350,4);ctx.fillRect(1135,958,350,4);for(let x=1150;x<1470;x+=28){ctx.fillStyle='#6b7b80';ctx.fillRect(x,896,4,68);}ctx.restore();
+}
+function drawSolid(s){ctx.save();if(s.type==='crate'){ctx.fillStyle='#46545a';ctx.fillRect(s.x,s.y,s.w,s.h);ctx.strokeStyle='#a0adb0';ctx.lineWidth=1.4;ctx.strokeRect(s.x+3,s.y+3,s.w-6,s.h-6);ctx.beginPath();ctx.moveTo(s.x+5,s.y+5);ctx.lineTo(s.x+s.w-5,s.y+s.h-5);ctx.moveTo(s.x+s.w-5,s.y+5);ctx.lineTo(s.x+5,s.y+s.h-5);ctx.stroke();}else if(s.type==='rack'){ctx.fillStyle='#39474e';ctx.fillRect(s.x,s.y,s.w,s.h);ctx.strokeStyle='#91a0a4';ctx.strokeRect(s.x,s.y,s.w,s.h);for(let y=s.y+22;y<s.y+s.h;y+=34){ctx.fillStyle='#66777d';ctx.fillRect(s.x+4,y,s.w-8,4);}}else if(s.type==='machine'){ctx.fillStyle='#35474e';ctx.fillRect(s.x,s.y,s.w,s.h);ctx.strokeStyle='#8a9ba0';ctx.lineWidth=2;ctx.strokeRect(s.x+3,s.y+3,s.w-6,s.h-6);ctx.fillStyle='#75c6bc';ctx.fillRect(s.x+10,s.y+10,8,5);ctx.fillStyle='#1a2b32';ctx.fillRect(s.x+10,s.y+27,s.w-20,s.h-40);ctx.strokeStyle='#71868b';ctx.strokeRect(s.x+10,s.y+27,s.w-20,s.h-40);}else{ctx.fillStyle='#56676d';ctx.fillRect(s.x,s.y,s.w,s.h);ctx.strokeStyle='#a5b5b8';ctx.strokeRect(s.x,s.y,s.w,s.h);}ctx.restore();}
+function drawTarget(t){ctx.save();const scanned=t.scanned;const pulse=.5+.5*Math.sin(state.gameTime*2.2);ctx.globalAlpha=scanned?.9:.45+.35*pulse;ctx.strokeStyle=scanned?'#87c9a3':'#d5b77b';ctx.fillStyle=scanned?'#5b9a7b':'#ba985d';ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(t.x,t.y,scanned?12:10,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.beginPath();ctx.arc(t.x,t.y,scanned?18:17,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;ctx.fillStyle='#d9e2df';ctx.font='9px ui-monospace,monospace';ctx.fillText(scanned?'RECORDED':(t.required?'SURVEY':'POINT OF INTEREST'),t.x+22,t.y+3);ctx.restore();}
+function drawInteractables(){for(const o of interactables){ctx.save();ctx.fillStyle=o.kind==='bay'?'#7eaaa5':(o.kind==='transit'?(state.routeUnlocked?'#7bc6a0':'#c5a86d'):(o.kind==='serviceDoor'?(state.serviceWingUnlocked?'#7bc6a0':'#c5a86d'):'#8da5ab'));ctx.fillRect(o.x-10,o.y-9,20,18);ctx.strokeStyle='#d0e2df';ctx.strokeRect(o.x-10,o.y-9,20,18);ctx.fillStyle='#102027';ctx.fillRect(o.x-4,o.y-3,8,6);ctx.restore();}}
+function drawBarrier(){if(!state.routeUnlocked){ctx.save();ctx.fillStyle='#533f30';ctx.fillRect(1190,806,100,8);ctx.fillStyle='#d1a76e';for(let x=1195;x<1290;x+=15){ctx.fillRect(x,803,7,14);}ctx.fillStyle='#d7bd8b';ctx.font='9px ui-monospace,monospace';ctx.fillText('ACCESS RESTRICTED',1194,795);ctx.restore();}else{ctx.save();ctx.fillStyle='#477f6c';ctx.fillRect(1190,806,100,5);ctx.fillStyle='#a0dfbb';ctx.fillRect(1234,798,12,3);ctx.restore();}
+  if(!state.serviceWingUnlocked){ctx.save();ctx.fillStyle='#533f30';ctx.fillRect(1260,570,18,150);ctx.fillStyle='#d1a76e';for(let y=574;y<716;y+=14){ctx.fillRect(1257,y,24,6);}ctx.fillStyle='#d7bd8b';ctx.font='9px ui-monospace,monospace';ctx.fillText('SERVICE ACCESS',1284,566);ctx.restore();}else{ctx.save();ctx.fillStyle='#477f6c';ctx.fillRect(1260,596,8,100);ctx.fillStyle='#a0dfbb';ctx.fillRect(1260,641,8,10);ctx.restore();}}
+function drawDrone(){ctx.save();ctx.translate(state.x,state.y);ctx.rotate(Math.atan2(state.dirY,state.dirX));ctx.shadowColor='#83d7cf';ctx.shadowBlur=14;ctx.fillStyle='#91aaa9';ctx.beginPath();ctx.moveTo(19,0);ctx.lineTo(5,-11);ctx.lineTo(-12,-9);ctx.lineTo(-16,0);ctx.lineTo(-12,9);ctx.lineTo(5,11);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#334a50';ctx.fillRect(-10,-6,17,12);ctx.fillStyle='#82d8d0';ctx.beginPath();ctx.arc(8,0,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#1a252a';ctx.fillRect(-14,-12,7,5);ctx.fillRect(-14,7,7,5);ctx.restore();}
+function drawLight(){if(!state.flashlight)return;ctx.save();ctx.globalCompositeOperation='lighter';const angle=Math.atan2(state.dirY,state.dirX);ctx.translate(state.x,state.y);ctx.rotate(angle);const grad=ctx.createRadialGradient(18,0,10,18,0,330);grad.addColorStop(0,'rgba(223,226,194,.26)');grad.addColorStop(.38,'rgba(193,212,190,.13)');grad.addColorStop(1,'rgba(150,190,184,0)');ctx.fillStyle=grad;ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,330,-.54,.54);ctx.closePath();ctx.fill();ctx.restore();}
+function drawFog(w,h){
+  if(fogCanvas.width!==Math.ceil(w)||fogCanvas.height!==Math.ceil(h)){fogCanvas.width=Math.ceil(w);fogCanvas.height=Math.ceil(h);}
+  fogCtx.clearRect(0,0,w,h);fogCtx.fillStyle='rgba(1,7,12,.54)';fogCtx.fillRect(0,0,w,h);
+  const sx=state.x-camera.x,sy=state.y-camera.y;fogCtx.save();fogCtx.globalCompositeOperation='destination-out';
+  const g=fogCtx.createRadialGradient(sx,sy,24,sx,sy,245);g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(.58,'rgba(0,0,0,.82)');g.addColorStop(1,'rgba(0,0,0,0)');fogCtx.fillStyle=g;fogCtx.beginPath();fogCtx.arc(sx,sy,245,0,Math.PI*2);fogCtx.fill();
+  if(state.flashlight){fogCtx.translate(sx,sy);fogCtx.rotate(Math.atan2(state.dirY,state.dirX));const cone=fogCtx.createRadialGradient(0,0,12,0,0,390);cone.addColorStop(0,'rgba(0,0,0,.98)');cone.addColorStop(.72,'rgba(0,0,0,.72)');cone.addColorStop(1,'rgba(0,0,0,0)');fogCtx.fillStyle=cone;fogCtx.beginPath();fogCtx.moveTo(0,0);fogCtx.arc(0,0,390,-.56,.56);fogCtx.closePath();fogCtx.fill();}
+  fogCtx.restore();ctx.drawImage(fogCanvas,0,0);
+}
+function renderWorld(w,h){ctx.clearRect(0,0,w,h);camera.x=Math.max(0,Math.min(1600-w,state.x-w/2));camera.y=Math.max(0,Math.min(1120-h,state.y-h/2));ctx.save();ctx.translate(-camera.x,-camera.y);ctx.fillStyle='#101b21';ctx.fillRect(0,0,1600,1120);for(const r of rooms)drawFloor(r);drawRoomDetails();for(const s of solids)drawSolid(s);drawInteractables();drawBarrier();for(const t of targets)drawTarget(t);drawLight();drawDrone();if(state.scannerPulse>0){ctx.strokeStyle=`rgba(115,214,207,${Math.min(1,state.scannerPulse*1.5)})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(state.x,state.y,260*(1-state.scannerPulse/.7)+10,0,Math.PI*2);ctx.stroke();}ctx.restore();drawFog(w,h);}
+function resizeMap(){const rect=mapCanvas.getBoundingClientRect();if(rect.width<20||rect.height<20)return;const d=Math.max(1,Math.min(2,window.devicePixelRatio||1));mapCanvas.width=rect.width*d;mapCanvas.height=rect.height*d;mapCtx.setTransform(d,0,0,d,0,0);}
+function drawMap(){resizeMap();const w=mapCanvas.clientWidth,h=mapCanvas.clientHeight;if(w<20)return;mapCtx.clearRect(0,0,w,h);mapCtx.fillStyle='#071119';mapCtx.fillRect(0,0,w,h);const scale=Math.min((w-44)/1600,(h-44)/1120);const ox=(w-1600*scale)/2,oy=(h-1120*scale)/2;mapCtx.save();mapCtx.translate(ox,oy);mapCtx.scale(scale,scale);for(const r of rooms){if(!r.name||!state.visited.includes(r.id))continue;mapCtx.fillStyle='#29444c';mapCtx.strokeStyle='#80aaa9';mapCtx.lineWidth=3;mapCtx.fillRect(r.x-50,r.y-50,r.w,r.h);mapCtx.strokeRect(r.x-50,r.y-50,r.w,r.h);mapCtx.fillStyle='#bdd4d2';mapCtx.font='bold 13px ui-monospace,monospace';mapCtx.fillText(r.name,r.x-38,r.y-30);}for(const t of targets){if(state.scanned.includes(t.id)){mapCtx.fillStyle=t.required?'#a6d5a9':'#d6bd83';mapCtx.beginPath();mapCtx.arc(t.x,t.y,9,0,Math.PI*2);mapCtx.fill();}}for(const id of state.markedRooms){const r=rooms.find(x=>x.id===id);if(r&&state.visited.includes(id)){const mx=r.x+r.w-24,my=r.y-28;mapCtx.fillStyle='#e6b76c';mapCtx.beginPath();mapCtx.arc(mx,my,11,0,Math.PI*2);mapCtx.fill();mapCtx.fillStyle='#17232a';mapCtx.font='bold 13px ui-monospace,monospace';mapCtx.fillText('!',mx-3.5,my+4.5);}}mapCtx.fillStyle='#79ded3';mapCtx.strokeStyle='#d2ffff';mapCtx.lineWidth=4;mapCtx.beginPath();mapCtx.arc(state.x,state.y,12,0,Math.PI*2);mapCtx.fill();mapCtx.stroke();mapCtx.restore();mapCtx.fillStyle='#8da8b0';mapCtx.font='10px ui-monospace,monospace';mapCtx.fillText('DRONE POSITION',12,h-12);}
+
+function updateHud(){
+ $('batteryText').textContent=Math.round(state.battery)+'%';$('batteryMeter').style.width=state.battery+'%';$('batteryMeter').style.background=state.battery<20?'#d97870':'#76d4d2';$('conditionText').textContent=Math.round(state.condition)+'%';$('conditionMeter').style.width=state.condition+'%';$('dataText').textContent=state.data;$('cargoText').textContent=cargoCount()+' / 1';$('progressNumber').textContent=requiredScannedCount()+' / 3';$('surveyProgress').style.width=(requiredScannedCount()/3*100)+'%';$('sensorTitle').textContent=state.sensorTitle;$('sensorText').textContent=state.sensorText;$('scannerState').textContent=state.scannerPulse>0?'ACTIVE PULSE':'PASSIVE SCAN';$('coords').textContent='X '+String(Math.round(state.x)).padStart(4,'0')+' / Y '+String(Math.round(state.y)).padStart(4,'0');$('bottomStatus').textContent=(state.flashlight?'FLASHLIGHT ON':'FLASHLIGHT OFF')+'  ·  '+(cargoCount()?'CARGO 1 / 1':'CARGO EMPTY');
+ const objectiveMarkup=`<div class="objective ${state.visited.includes('storage')?'done':''}"><span class="obj-dot">${state.visited.includes('storage')?'✓':''}</span><span>Survey the storage room</span></div><div class="objective ${state.visited.includes('utility')?'done':''}"><span class="obj-dot">${state.visited.includes('utility')?'✓':''}</span><span>Survey the utility room</span></div><div class="objective ${requiredScannedCount()>=3?'done':''}"><span class="obj-dot">${requiredScannedCount()>=3?'✓':''}</span><span>Analyze three main survey targets (${requiredScannedCount()}/3)</span></div><div class="objective ${state.sampleCollected?'done':''}"><span class="obj-dot">${state.sampleCollected?'✓':''}</span><span>Collect the small alloy sample</span></div><div class="objective ${recoveredSample()?'done':''}"><span class="obj-dot">${recoveredSample()?'✓':''}</span><span>Return the sample to the facility</span></div><div class="objective ${state.routeUnlocked?'done':''}"><span class="obj-dot">${state.routeUnlocked?'✓':''}</span><span>Investigate the transit routing console</span></div>`;
+ $('objectiveList').innerHTML=objectiveMarkup;
+ const collapsed=Boolean(state.uiSettings&&state.uiSettings.objectivesCollapsed);
+ $('objectiveList').style.display=collapsed?'none':'block';$('objectiveSummary').textContent=`Main survey ${requiredScannedCount()}/3 · ${state.routeUnlocked?'Transit route connected':'Initial survey active'}`;$('objectiveToggle').textContent=collapsed?'Expand':'Collapse';$('objectiveToggle').setAttribute('aria-expanded',String(!collapsed));
+ const mobileObjectives=$('mobileObjectives');if(mobileObjectives){mobileObjectives.classList.toggle('expanded',!collapsed);$('mobileObjectiveToggle').textContent=`OBJECTIVES · ${requiredScannedCount()}/3 · ${collapsed?'TAP TO EXPAND':'TAP TO COLLAPSE'}`;$('mobileObjectiveList').innerHTML=objectiveMarkup;}
+ $('systemStatus').innerHTML=`Camera operational · Scanner ${hasUpgrade('scanner-calibration')?'calibrated':'standard'} · Power ${hasUpgrade('power-regulator')?'regulated':'standard'} · Illumination ${state.flashlight?'enabled':'standby'}`;
+ const prompt=nearbyInteractable();$('interactPrompt').style.display=prompt?'block':'none';if(prompt){$('promptText').textContent=prompt.kind==='bay'?'Return to facility':(prompt.kind==='transit'?'Access routing console':(prompt.kind==='sample'?'Collect alloy sample':(prompt.kind==='serviceDoor'?'Service wing access console':'Access service terminal')));$('interactPrompt').querySelector('kbd').textContent=touchControlsVisible()?'USE':'E';}
+ $('discoveryList').innerHTML=targets.filter(t=>t.scanned).map(t=>`<div class="discovery-item">${escapeHtml(t.name)}<small>${escapeHtml(t.room)} · RECORDED</small></div>`).join('')||'<div class="discovery-item">No records recovered<small>Survey data will appear here</small></div>';
+ $('cargoReadout').innerHTML=cargoCount()?`<strong>${escapeHtml(state.carriedItems[0].name)}</strong>One small specimen secured in the manipulator.<small>Return to the Deployment Bay Console to transfer it.</small>`:`<strong>Manipulator empty</strong>${recoveredSample()?'The alloy specimen is secured in the facility collection.':'No physical samples collected.'}`;
+}
+function tick(dt){state.gameTime+=dt;hudAccumulator+=dt;if(state.missionActive&&state.gameTime-state.lastSave>8){saveGame(true);state.lastSave=state.gameTime;}if(state.missionActive&&state.battery<=20&&!state.lowBatteryNotified){state.lowBatteryNotified=true;state.sensorTitle='Low battery reserve';state.sensorText='Battery reserve is low. Prioritize the return to the Deployment Bay. Movement remains available for safe recovery.';showToast('Low battery · Return to the Deployment Bay.');addLog('Battery reserve has fallen below 20%. Return to the deployment bay is recommended.');saveGame(true);}if(state.scannerPulse>0)state.scannerPulse=Math.max(0,state.scannerPulse-dt);if(state.missionActive){let vx=0,vy=0;if(keys.w||keys.arrowup)vy--;if(keys.s||keys.arrowdown)vy++;if(keys.a||keys.arrowleft)vx--;if(keys.d||keys.arrowright)vx++;const mag=Math.hypot(vx,vy)||1;vx/=mag;vy/=mag;const loadFactor=cargoCount()?0.88:1;const speed=(keys.shift?185:128)*loadFactor;if(vx||vy){state.dirX=vx;state.dirY=vy;const nx=state.x+vx*speed*dt,ny=state.y+vy*speed*dt;if(canStand(nx,state.y))state.x=nx;if(canStand(state.x,ny))state.y=ny;state.battery=Math.max(0,state.battery-dt*.035*(keys.shift?1.35:1)*(hasUpgrade('power-regulator')?.75:1));}else{state.battery=Math.max(0,state.battery-dt*.006*(hasUpgrade('power-regulator')?.75:1));}discoverRoom();const nearest=nearestTarget();if(nearest&&nearest.distance<250&&!nearest.target.scanned){state.sensorTitle='Unresolved return';state.sensorText='Possible unfamiliar object: '+nearest.target.name+'. Approximate range '+Math.round(nearest.distance)+' m. Activate scanner when closer.';}else if(!nearest||nearest.distance>250){state.sensorTitle='No target selected';state.sensorText='Move near an object and activate the scanner to inspect it.';}if(hudAccumulator>.15){updateHud();hudAccumulator=0;}}}
+function frame(ts){const dt=Math.min(.04,(ts-lastFrame)/1000||0);lastFrame=ts;if(game.style.display==='grid'&&!document.querySelector('.modal-backdrop.open')){tick(dt);const w=viewport.clientWidth,h=viewport.clientHeight;if(w>0&&h>0)renderWorld(w,h);}requestAnimationFrame(frame);}
+
+function deviceHasTouchInput(){return (navigator.maxTouchPoints||0)>0||window.matchMedia('(any-pointer: coarse)').matches;}
+function touchControlsVisible(){const mode=state.uiSettings?.touchControls||'auto';return mode==='show'||(mode==='auto'&&deviceHasTouchInput());}
+function applyTouchControls(){document.documentElement.classList.toggle('touch-controls-enabled',touchControlsVisible());}
+
+// Input
+const keyboardKeys=new Set(), activeTouchKeys=new Map();
+function syncMovementKey(key){keys[key]=keyboardKeys.has(key)||Array.from(activeTouchKeys.values()).includes(key);}
+function releaseAllInputs(){keyboardKeys.clear();activeTouchKeys.clear();keys={};}
+window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();keyboardKeys.add(k);syncMovementKey(k);if(e.repeat)return;if(k==='q'&&game.style.display==='grid'&&!document.querySelector('.modal-backdrop.open'))pulseScanner();if(k==='f'&&game.style.display==='grid'){state.flashlight=!state.flashlight;showToast('Flashlight '+(state.flashlight?'enabled':'disabled')+'.');updateHud();saveGame(true);}if(k==='e'&&game.style.display==='grid'&&!document.querySelector('.modal-backdrop.open'))interact();if(k==='m'&&game.style.display==='grid'){openModal('mapModal');}if(k==='l'&&game.style.display==='grid'){openModal('logModal');}if(k==='escape'&&game.style.display==='grid'){const open=document.querySelector('.modal-backdrop.open');if(open)closeAllModals();else openModal('pauseModal');}});
+window.addEventListener('keyup',e=>{const k=e.key.toLowerCase();keyboardKeys.delete(k);syncMovementKey(k);});
+// Pointer events work for touchscreens, styluses, and mouse input. Each pointer owns its own held direction.
+document.querySelectorAll('.touch-key').forEach(btn=>{
+ const key=btn.dataset.key;
+ btn.addEventListener('pointerdown',e=>{if(e.cancelable)e.preventDefault();activeTouchKeys.set(e.pointerId,key);syncMovementKey(key);try{btn.setPointerCapture(e.pointerId);}catch(_){}});
+ const release=e=>{const held=activeTouchKeys.get(e.pointerId);if(held){activeTouchKeys.delete(e.pointerId);syncMovementKey(held);}};
+ btn.addEventListener('pointerup',release);btn.addEventListener('pointercancel',release);btn.addEventListener('lostpointercapture',release);
+});
+window.addEventListener('blur',releaseAllInputs);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseAllInputs();});
+// Discrete actions deliberately use click: it is the most compatible activation event on iOS Safari.
+$('touchScan').addEventListener('click',e=>{e.preventDefault();pulseScanner();});
+$('touchInteract').addEventListener('click',e=>{e.preventDefault();interact();});
+$('touchLight').addEventListener('click',e=>{e.preventDefault();state.flashlight=!state.flashlight;showToast('Flashlight '+(state.flashlight?'enabled':'disabled')+'.');updateHud();saveGame(true);});
+// Fallback for iOS embedded browsers that dispatch touch events but omit the synthesized click.
+// Prevent the browser's duplicate follow-up click, then invoke the normal button handler once.
+document.addEventListener('touchend',e=>{
+  const button=e.target && e.target.closest ? e.target.closest('button') : null;
+  if(!button || button.disabled || button.classList.contains('touch-key')) return;
+  if(e.cancelable) e.preventDefault();
+  button.click();
+},{passive:false});
+canvas.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;const wx=mouse.x+camera.x,wy=mouse.y+camera.y;const dx=wx-state.x,dy=wy-state.y;if(Math.hypot(dx,dy)>20){state.dirX=dx/Math.hypot(dx,dy);state.dirY=dy/Math.hypot(dx,dy);}});
+
+$('hubNav').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b)renderHub(b.dataset.tab);});
+hubContent.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const action=b.dataset.action;if(action==='deploy')startMission();if(action==='brief')renderHub('communications');if(action==='openmap'){openModal('mapModal');}if(action==='research')purchaseUpgrade(b.dataset.upgrade);
+ if(action==='selectMessage'){const m=state.communications.find(x=>x.id===b.dataset.message);if(m){messageView.selectedId=m.id;m.read=true;saveGame(true);renderCommunications();}}
+ if(action==='toggleMessageRead'){const m=state.communications.find(x=>x.id===b.dataset.message);if(m){m.read=!m.read;messageView.selectedId=m.id;saveGame(true);renderCommunications();}}
+ if(action==='toggleMessageArchive'){const m=state.communications.find(x=>x.id===b.dataset.message);if(m){m.archived=!m.archived;messageView.selectedId=m.id;saveGame(true);renderCommunications();}}
+ if(action==='archiveReadMessages'){state.communications.forEach(m=>{if(m.read)m.archived=true;});saveGame(true);renderCommunications();showToast('Read messages archived. Nothing was deleted.');}
+ if(action==='openMessageRecord'){const linked=state.communications.find(m=>m.id===b.dataset.message);renderHub(linked&&linked.link&&linked.link.type==='journal'?'journal':'database');}
+ if(action==='toggleRoomMarker'){const id=b.dataset.room;if(state.markedRooms.includes(id))state.markedRooms=state.markedRooms.filter(x=>x!==id);else if(rooms.some(r=>r.id===id&&state.visited.includes(id)))state.markedRooms.push(id);saveGame(true);renderHub('map');if($('mapModal').classList.contains('open'))drawMap();}
+ if(action==='toggleObjectiveSetting'){state.uiSettings.objectivesCollapsed=!state.uiSettings.objectivesCollapsed;saveGame(true);renderHub('settings');updateHud();}
+});
+hubContent.addEventListener('input',e=>{if(e.target.id==='messageSearch'){messageView.query=e.target.value;renderMessageList();}});
+hubContent.addEventListener('change',e=>{if(e.target.id==='messageCategory'){messageView.category=e.target.value;renderCommunications();}if(e.target.id==='messageStatus'){messageView.status=e.target.value;renderCommunications();}if(e.target.id==='messageSort'){messageView.sort=e.target.value;renderCommunications();}if(e.target.id==='touchControlsSetting'){state.uiSettings.touchControls=e.target.value;applyTouchControls();saveGame(true);renderHub('settings');showToast('Touchscreen control preference saved.');}});
+$('objectiveToggle').addEventListener('click',()=>{state.uiSettings.objectivesCollapsed=!state.uiSettings.objectivesCollapsed;updateHud();saveGame(true);});
+$('mobileObjectiveToggle').addEventListener('click',()=>{state.uiSettings.objectivesCollapsed=!state.uiSettings.objectivesCollapsed;updateHud();saveGame(true);});
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).classList.remove('open')));
+document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+$('mapButton').addEventListener('click',()=>openModal('mapModal'));$('logButton').addEventListener('click',()=>openModal('logModal'));$('facilityButton').addEventListener('click',()=>openModal('pauseModal'));
+$('resumeButton').addEventListener('click',()=>closeAllModals());$('returnButton').addEventListener('click',()=>{if(Math.hypot(state.x-195,state.y-325)<105){interact();}else{showToast('Return the drone to the Deployment Bay Console before extraction.');closeAllModals();}});$('saveButton').addEventListener('click',()=>saveGame(false));
+window.addEventListener('resize',()=>{resizeCanvas();if($('mapModal').classList.contains('open'))drawMap();});
+window.addEventListener('beforeunload',()=>saveGame(true));
+
+safeLoad();
+targets.forEach(t=>t.scanned=state.scanned.includes(t.id));
+applyTouchControls();
+renderHub('expedition');
+updateMessageBadge();
+updateHud();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
