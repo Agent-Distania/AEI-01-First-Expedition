@@ -569,7 +569,7 @@ const hasExistingSave=(()=>{try{return !!localStorage.getItem(saveKey);}catch(e)
 facility.style.display='none';game.style.display='none';$('mainMenu').style.display='flex';
 $('continueButton').disabled=!hasExistingSave;$('continueButton').style.opacity=hasExistingSave?'1':'.45';
 $('continueButton').addEventListener('click',()=>{if(!hasExistingSave)return;$('mainMenu').style.display='none';facility.style.display='block';game.style.display='none';renderHub('expedition');});
-$('newGameButton').addEventListener('click',()=>{try{localStorage.removeItem(saveKey);}catch(e){}state=JSON.parse(JSON.stringify(freshStateSnapshot));state.missionActive=false;hubTab='expedition';messageView.selectedId=null;targets.forEach(t=>t.scanned=false);$('mainMenu').style.display='none';game.style.display='none';facility.style.display='block';applyTouchControls();renderHub('expedition');updateMessageBadge();updateHud();saveGame(true);});
+$('newGameButton').addEventListener('click',()=>{if(hasExistingSave&&!window.confirm('Start a new expedition? This will replace your saved progress in this browser.'))return;try{localStorage.removeItem(saveKey);}catch(e){}state=JSON.parse(JSON.stringify(freshStateSnapshot));state.missionActive=false;hubTab='expedition';messageView.selectedId=null;targets.forEach(t=>t.scanned=false);$('mainMenu').style.display='none';game.style.display='none';facility.style.display='block';applyTouchControls();renderHub('expedition');updateMessageBadge();updateHud();saveGame(true);});
 targets.forEach(t=>t.scanned=state.scanned.includes(t.id));
 applyTouchControls();
 renderHub('expedition');
