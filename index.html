@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#09121a" />
-<title>AEI-01 | First Expedition · 0.4.2</title>
+<title>AEI-01 | First Expedition · 0.5.0</title>
 <style>
 :root{--bg:#081018;--panel:#101d28;--panel2:#142532;--line:#29404d;--muted:#8da4b2;--text:#e4edf0;--cyan:#76d4d2;--cyan2:#3eaaa9;--amber:#e6b76c;--red:#d97870;--green:#8cc6a1}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
@@ -88,10 +88,28 @@ html.touch-controls-enabled .touch-controls{display:block}
   .bottom-bar{gap:8px}
   .bottom-bar span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
+
+/* 0.5.0 Main menu */
+#mainMenu{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse at 50% 35%,#1b3441 0%,#0b1720 55%,#060c12 100%);overflow:auto}
+.menu-shell{width:min(900px,100%);padding:clamp(22px,6vw,64px);border:1px solid #29404d;background:linear-gradient(145deg,rgba(15,28,39,.92),rgba(7,15,22,.94));box-shadow:0 25px 90px #0006;border-radius:18px}
+.menu-brand{display:flex;align-items:center;gap:18px;margin-bottom:clamp(24px,6vh,52px)}
+.menu-mark{width:64px;height:64px;border:1px solid #4d7981;border-radius:15px;display:grid;place-items:center;color:var(--cyan);font-size:24px;font-weight:800;letter-spacing:.04em;background:linear-gradient(145deg,#1d3b47,#10232e)}
+.menu-eyebrow{color:var(--cyan);letter-spacing:.18em;font-size:11px;text-transform:uppercase}
+.menu-title{font-size:clamp(30px,6vw,56px);line-height:1.06;margin:8px 0 0;font-weight:750;letter-spacing:.025em}
+.menu-subtitle{color:#9bb1bc;font-size:clamp(13px,2vw,17px);letter-spacing:.1em;margin:14px 0 0}
+.menu-actions{display:flex;flex-direction:column;gap:12px;max-width:360px;margin-top:30px}
+.menu-button{border:1px solid #35515e;border-radius:10px;background:#142532;color:#e4edf0;padding:16px 20px;text-align:left;font-weight:700;letter-spacing:.1em;transition:background .15s,border-color .15s}
+.menu-button.primary{background:linear-gradient(120deg,#214653,#17313c);border-color:#5eabb0;color:#e8f6f6}
+.menu-button:active{background:#27515d}
+.menu-button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.menu-foot{border-top:1px solid #29404d;margin-top:40px;padding-top:16px;color:#6f8997;font-size:11px;letter-spacing:.13em}
+@media(max-width:480px){.menu-shell{padding:24px 20px}.menu-brand{gap:12px}.menu-mark{width:50px;height:50px;border-radius:12px;font-size:19px}.menu-actions{max-width:none}}
 </style>
 </head>
 <body>
 <div id="app">
+  <section id="mainMenu" aria-label="Main menu"><div class="menu-shell"><div class="menu-brand"><div class="menu-mark">DEI</div><div><div class="menu-eyebrow">Deep Exploration Initiative</div><h1 class="menu-title">AEI-01<br>FIRST EXPEDITION</h1></div></div><p class="menu-subtitle">REMOTE EXPLORATION PROGRAM · FIELD SYSTEMS ONLINE</p><div class="menu-actions"><button class="menu-button primary" id="newGameButton">NEW GAME</button><button class="menu-button" id="continueButton">CONTINUE</button></div><div class="menu-foot">RESEARCH DRONE OPERATIONS &nbsp; / &nbsp; BUILD 0.5.0</div></div></section>
+
   <section id="facility">
     <div class="fac-shell">
       <header class="fac-top">
@@ -114,7 +132,7 @@ html.touch-controls-enabled .touch-controls{display:block}
         <button class="nav-btn" data-tab="settings">Settings</button>
       </nav>
       <main class="hub-content" id="hubContent"></main>
-      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.4.2 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
+      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.5.0 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
     </div>
   </section>
 
@@ -199,7 +217,7 @@ const canvas = $('worldCanvas'), ctx = canvas.getContext('2d');
 const mapCanvas = $('mapCanvas'), mapCtx = mapCanvas.getContext('2d');
 const fogCanvas = document.createElement('canvas'), fogCtx = fogCanvas.getContext('2d');
 const viewport = $('viewport');
-const VERSION = '0.4.2';
+const VERSION = '0.5.0';
 const saveKey = 'dei_aei01_first_expedition_v01';
 
 const rooms = [
@@ -266,6 +284,7 @@ let state = {
   carriedItems:[],recoveredItems:[],sampleCollected:false,lowBatteryNotified:false,researchPoints:0,upgrades:[],markedRooms:[],uiSettings:{touchControls:'auto',objectivesCollapsed:false},
   sensorTitle:'No target selected',sensorText:'Move near an object and activate the scanner to inspect it.'
 };
+const freshStateSnapshot=JSON.parse(JSON.stringify(state));
 let keys = {}, mouse = {x:0,y:0}, camera = {x:0,y:0}, lastFrame = 0, toastTimer = null, hubTab='expedition', mapOpen=false, hudAccumulator=0;
 let dpr = Math.max(1,Math.min(2,window.devicePixelRatio||1));
 const messageView={category:'all',status:'all',sort:'newest',query:'',selectedId:null};
@@ -355,6 +374,7 @@ function renderHub(tab=hubTab){hubTab=tab;document.querySelectorAll('.nav-btn').
   hubContent.innerHTML=`<div class="panel-page"><h2>Expedition Logbook</h2><article class="hub-card" style="grid-column:1/-1"><div class="eyebrow">Field activity record</div>${state.logs.map(m=>`<div class="entry"><strong>${escapeHtml(formatTimestamp(m.timestamp))} · Field record${m.timestamp?'':' · legacy'}</strong><p>${escapeHtml(m.text)}</p></div>`).join('')||'<p class="small-copy">No records yet.</p>'}</article></div>`;
  } else if(tab==='patchnotes'){
   hubContent.innerHTML=`<div class="panel-page"><h2>Patch Notes</h2>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.5.0</div><h3>Main Menu Update</h3><div class="patch-group"><strong>Added</strong><p>Title screen with New Game and Continue buttons.</p></div><div class="patch-group"><strong>Changed</strong><p>Facility screen is now entered from the main menu.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>None.</p></div></article>
    <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.4.2</div><h3>Mobile Layout Hotfix</h3><div class="patch-group"><strong>Added</strong><p>Responsive short-screen layout rules for phones, with a compact field header and status bar.</p></div><div class="patch-group"><strong>Changed</strong><p>The field viewport now uses the full available phone width when desktop side panels are hidden.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>Corrected the short-screen grid rule that left a narrow game view and unused black space on mobile; reduced header and status-bar overlap.</p></div></article>
    <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.4.1</div><h3>Deployment Hotfix</h3><div class="patch-group"><strong>Added</strong><p>Direct touchscreen activation for the Deploy Exploration Drone button.</p></div><div class="patch-group"><strong>Changed</strong><p>Deployment now ignores duplicate activation while the field view is already open.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>Improved mobile deployment activation to address the drone not launching from the facility screen.</p></div></article>
    <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.4.1</div><h3>Infrastructure &amp; Exploration Update</h3>
@@ -545,6 +565,11 @@ window.addEventListener('resize',()=>{resizeCanvas();if($('mapModal').classList.
 window.addEventListener('beforeunload',()=>saveGame(true));
 
 safeLoad();
+const hasExistingSave=(()=>{try{return !!localStorage.getItem(saveKey);}catch(e){return false;}})();
+facility.style.display='none';game.style.display='none';$('mainMenu').style.display='flex';
+$('continueButton').disabled=!hasExistingSave;$('continueButton').style.opacity=hasExistingSave?'1':'.45';
+$('continueButton').addEventListener('click',()=>{if(!hasExistingSave)return;$('mainMenu').style.display='none';facility.style.display='block';game.style.display='none';renderHub('expedition');});
+$('newGameButton').addEventListener('click',()=>{try{localStorage.removeItem(saveKey);}catch(e){}state=JSON.parse(JSON.stringify(freshStateSnapshot));state.missionActive=false;hubTab='expedition';messageView.selectedId=null;targets.forEach(t=>t.scanned=false);$('mainMenu').style.display='none';game.style.display='none';facility.style.display='block';applyTouchControls();renderHub('expedition');updateMessageBadge();updateHud();saveGame(true);});
 targets.forEach(t=>t.scanned=state.scanned.includes(t.id));
 applyTouchControls();
 renderHub('expedition');
