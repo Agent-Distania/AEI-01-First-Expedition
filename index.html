@@ -387,7 +387,7 @@ function renderCommunications(){
  renderMessageList();renderMessageDetail();updateMessageBadge();
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function startMission(){state.missionActive=true;facility.style.display='none';game.style.display='grid';resizeCanvas();addLog('Drone link engaged. Initial survey of the Access & Maintenance Sector is underway.');updateHud();renderHub();}
+function startMission(){if(game.style.display==='grid')return;state.missionActive=true;facility.style.display='none';game.style.display='grid';resizeCanvas();addLog('Drone link engaged. Initial survey of the Access & Maintenance Sector is underway.');updateHud();renderHub();}
 function returnFacility(){state.missionActive=false;saveGame(true);game.style.display='none';facility.style.display='block';closeAllModals();renderHub('expedition');}
 function openModal(id){$(id).classList.add('open');if(id==='mapModal')drawMap();if(id==='logModal')renderLog();}
 function closeAllModals(){document.querySelectorAll('.modal-backdrop').forEach(m=>m.classList.remove('open'));}
@@ -498,6 +498,7 @@ document.addEventListener('touchend',e=>{
 canvas.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;const wx=mouse.x+camera.x,wy=mouse.y+camera.y;const dx=wx-state.x,dy=wy-state.y;if(Math.hypot(dx,dy)>20){state.dirX=dx/Math.hypot(dx,dy);state.dirY=dy/Math.hypot(dx,dy);}});
 
 $('hubNav').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b)renderHub(b.dataset.tab);});
+hubContent.addEventListener('pointerup',e=>{const b=e.target.closest('[data-action="deploy"]');if(!b||e.pointerType!=='touch')return;if(e.cancelable)e.preventDefault();startMission();},{capture:true});
 hubContent.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const action=b.dataset.action;if(action==='deploy')startMission();if(action==='brief')renderHub('communications');if(action==='openmap'){openModal('mapModal');}if(action==='research')purchaseUpgrade(b.dataset.upgrade);
  if(action==='selectMessage'){const m=state.communications.find(x=>x.id===b.dataset.message);if(m){messageView.selectedId=m.id;m.read=true;saveGame(true);renderCommunications();}}
  if(action==='toggleMessageRead'){const m=state.communications.find(x=>x.id===b.dataset.message);if(m){m.read=!m.read;messageView.selectedId=m.id;saveGame(true);renderCommunications();}}
