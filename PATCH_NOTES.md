@@ -64,3 +64,17 @@
 
 ### Fixed
 - New Game resets expedition progress to the initial state; an existing save is protected by a confirmation prompt.
+
+## 0.5.1 — Communications Scrolling Hotfix
+
+### Added
+- Improved mobile touch scrolling behavior for the communications message list.
+
+### Changed
+- Communications list rerenders preserve the list scroll position.
+
+### Removed
+- None.
+
+### Fixed
+- Reduced scroll bounce and gesture interruption in the mobile communications list.
