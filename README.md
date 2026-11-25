@@ -6,7 +6,7 @@ A browser-based exploration prototype about a research drone exploring an immens
 Open `index.html` in a modern browser. Keyboard and touchscreen controls are supported by the game build; device-specific behavior may vary by browser.
 
 ## Current version
-**0.4.2 — Mobile Layout Hotfix**
+**0.5.0 — Main Menu Update**
 
 ## Project notes
 - This repository contains the current standalone HTML game build.
@@ -15,6 +15,21 @@ Open `index.html` in a modern browser. Keyboard and touchscreen controls are sup
 
 ## Patch notes
 See the in-game Patch Notes for version history. The current release's summary:
+
+### 0.5.0 — Main Menu Update
+
+**Added**
+- Main menu title screen with New Game and Continue options.
+- Continue is disabled if no save is detected.
+
+**Changed**
+- Facility screen is entered from the main menu.
+
+**Removed**
+- None.
+
+**Fixed**
+- New Game resets to initial state; existing progress is protected by a confirmation.
 
 ### 0.4.2 — Mobile Layout Hotfix
 
