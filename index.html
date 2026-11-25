@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#09121a" />
-<title>AEI-01 | First Expedition · 0.4.0</title>
+<title>AEI-01 | First Expedition · 0.4.1</title>
 <style>
 :root{--bg:#081018;--panel:#101d28;--panel2:#142532;--line:#29404d;--muted:#8da4b2;--text:#e4edf0;--cyan:#76d4d2;--cyan2:#3eaaa9;--amber:#e6b76c;--red:#d97870;--green:#8cc6a1}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
@@ -91,7 +91,7 @@ html.touch-controls-enabled .touch-controls{display:block}
         <button class="nav-btn" data-tab="settings">Settings</button>
       </nav>
       <main class="hub-content" id="hubContent"></main>
-      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.4.0 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
+      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.4.1 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
     </div>
   </section>
 
@@ -176,7 +176,7 @@ const canvas = $('worldCanvas'), ctx = canvas.getContext('2d');
 const mapCanvas = $('mapCanvas'), mapCtx = mapCanvas.getContext('2d');
 const fogCanvas = document.createElement('canvas'), fogCtx = fogCanvas.getContext('2d');
 const viewport = $('viewport');
-const VERSION = '0.4.0';
+const VERSION = '0.4.1';
 const saveKey = 'dei_aei01_first_expedition_v01';
 
 const rooms = [
@@ -332,7 +332,8 @@ function renderHub(tab=hubTab){hubTab=tab;document.querySelectorAll('.nav-btn').
   hubContent.innerHTML=`<div class="panel-page"><h2>Expedition Logbook</h2><article class="hub-card" style="grid-column:1/-1"><div class="eyebrow">Field activity record</div>${state.logs.map(m=>`<div class="entry"><strong>${escapeHtml(formatTimestamp(m.timestamp))} · Field record${m.timestamp?'':' · legacy'}</strong><p>${escapeHtml(m.text)}</p></div>`).join('')||'<p class="small-copy">No records yet.</p>'}</article></div>`;
  } else if(tab==='patchnotes'){
   hubContent.innerHTML=`<div class="panel-page"><h2>Patch Notes</h2>
-   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.4.0</div><h3>Infrastructure &amp; Exploration Update</h3>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.4.1</div><h3>Deployment Hotfix</h3><div class="patch-group"><strong>Added</strong><p>Direct touchscreen activation for the Deploy Exploration Drone button.</p></div><div class="patch-group"><strong>Changed</strong><p>Deployment now ignores duplicate activation while the field view is already open.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>Improved mobile deployment activation to address the drone not launching from the facility screen.</p></div></article>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.4.1</div><h3>Infrastructure &amp; Exploration Update</h3>
     <div class="patch-group"><strong>Added</strong><p>A restricted service wing branching from the Utility Room, a Power Distribution Chamber with new visual equipment, a service-access console, and a new optional scan record for the distribution housing array. Charted room entry now generates a dated discovery message.</p></div>
     <div class="patch-group"><strong>Changed</strong><p>The survey map now scales to show the new wing. The service-wing access console requires the local maintenance index and completion of the three primary survey scans before it will open.</p></div>
     <div class="patch-group"><strong>Removed</strong><p>None.</p></div>
