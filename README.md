@@ -6,7 +6,7 @@ A browser-based exploration prototype about a research drone exploring an immens
 Open `index.html` in a modern browser. Keyboard and touchscreen controls are supported by the game build; device-specific behavior may vary by browser.
 
 ## Current version
-**0.4.1 — Deployment Hotfix**
+**0.4.2 — Mobile Layout Hotfix**
 
 ## Project notes
 - This repository contains the current standalone HTML game build.
@@ -15,6 +15,21 @@ Open `index.html` in a modern browser. Keyboard and touchscreen controls are sup
 
 ## Patch notes
 See the in-game Patch Notes for version history. The current release's summary:
+
+### 0.4.2 — Mobile Layout Hotfix
+
+**Added**
+- Responsive short-screen phone layout and compact field header/status bar.
+
+**Changed**
+- Field viewport now uses the full available phone width when desktop side panels are hidden.
+
+**Removed**
+- None.
+
+**Fixed**
+- Corrected the short-screen grid override that left the game view narrow and unused black space on mobile.
+- Reduced mobile header and footer overlap.
 
 ### 0.4.1 — Deployment Hotfix
 
