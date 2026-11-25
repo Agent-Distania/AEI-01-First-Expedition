@@ -49,3 +49,18 @@
 ### Fixed
 - Corrected the short-screen grid rule that left a narrow game view and unused black space on mobile.
 - Reduced overlap in the mobile game header and footer status bar.
+
+## 0.5.0 — Main Menu Update
+
+### Added
+- Main menu title screen with New Game and Continue options.
+- Continue is disabled when no saved expedition is detected.
+
+### Changed
+- Facility screen is entered from the main menu.
+
+### Removed
+- None.
+
+### Fixed
+- New Game resets expedition progress to the initial state; an existing save is protected by a confirmation prompt.
