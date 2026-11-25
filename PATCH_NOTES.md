@@ -20,3 +20,17 @@
 ### Fixed
 - Save migration for the new access system.
 - Passage clearance issue in the new service wing.
+
+## 0.4.1 — Deployment Hotfix
+
+### Added
+- Direct touchscreen activation for the Deploy Exploration Drone button.
+
+### Changed
+- Deployment ignores duplicate activation while the field view is already open.
+
+### Removed
+- None.
+
+### Fixed
+- Improved mobile deployment activation to address the drone not launching from the facility screen.
