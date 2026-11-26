@@ -6,7 +6,7 @@ A browser-based exploration prototype about a research drone exploring an immens
 Open `index.html` in a modern browser. Keyboard and touchscreen controls are supported by the game build; device-specific behavior may vary by browser.
 
 ## Current version
-**0.5.5 — Drone Deployment Hotfix**
+**0.5.6 — Touch Deployment Hotfix**
 
 ## Project notes
 - This repository contains the current standalone HTML game build.
@@ -19,16 +19,16 @@ See the in-game Patch Notes for version history. The current release's summary:
 ### 0.5.5 — Drone Deployment Hotfix
 
 **Added**
-- One unified deployment activation path for mouse and touchscreen controls.
+- Separate, reliable activation paths for touch and mouse/keyboard.
 
 **Changed**
-- Drone deployment now relies on the click handler and iOS touch fallback.
+- Touch uses pointerup directly; mouse and keyboard use click.
 
 **Removed**
-- Separate touchscreen pointer-up deployment handler.
+- Shared touch/click deployment path.
 
 **Fixed**
-- Reduced competing touch activation paths that could trigger or interfere with deployment.
+- Restored direct touchscreen deployment activation while retaining duplicate-start protection.
 
 ### 0.5.4 — Mobile Viewport & Scroll Stability
 
