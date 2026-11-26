@@ -78,3 +78,17 @@
 
 ### Fixed
 - Reduced scroll bounce and gesture interruption in the mobile communications list.
+
+## 0.5.2 — Mobile Scroll Stability Hotfix
+
+### Added
+- Stable small-viewport height handling for mobile facility scrolling.
+
+### Changed
+- Communications rerenders preserve the facility page scroll position too.
+
+### Removed
+- None.
+
+### Fixed
+- Adjusted the mobile facility viewport to reduce scroll jumps when browser UI changes screen height.
