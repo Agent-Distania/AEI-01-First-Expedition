@@ -92,3 +92,17 @@
 
 ### Fixed
 - Adjusted the mobile facility viewport to reduce scroll jumps when browser UI changes screen height.
+
+## 0.5.3 — Mobile Communications Scroll Redesign
+
+### Added
+- One vertical scroll surface for the Communications Center on mobile.
+
+### Changed
+- Message cards expand naturally in the facility page on phones.
+
+### Removed
+- Nested mobile message-list scrolling.
+
+### Fixed
+- Reduced competing vertical scroll containers that could cause page snapping or unexpected scroll movement.
