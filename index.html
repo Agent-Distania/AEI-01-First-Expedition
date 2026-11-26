@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#09121a" />
-<title>AEI-01 | First Expedition · 0.5.1</title>
+<title>AEI-01 | First Expedition · 0.5.2</title>
 <style>
 :root{--bg:#081018;--panel:#101d28;--panel2:#142532;--line:#29404d;--muted:#8da4b2;--text:#e4edf0;--cyan:#76d4d2;--cyan2:#3eaaa9;--amber:#e6b76c;--red:#d97870;--green:#8cc6a1}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
@@ -104,6 +104,11 @@ html.touch-controls-enabled .touch-controls{display:block}
 .menu-button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 .menu-foot{border-top:1px solid #29404d;margin-top:40px;padding-top:16px;color:#6f8997;font-size:11px;letter-spacing:.13em}
 @media(max-width:480px){.menu-shell{padding:24px 20px}.menu-brand{gap:12px}.menu-mark{width:50px;height:50px;border-radius:12px;font-size:19px}.menu-actions{max-width:none}}
+/* 0.5.2 stable mobile viewport scrolling */
+@media(max-width:700px){
+ #app{height:100svh;height:100vh}
+ #facility{height:100svh;height:100vh;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+}
 </style>
 </head>
 <body>
@@ -132,7 +137,7 @@ html.touch-controls-enabled .touch-controls{display:block}
         <button class="nav-btn" data-tab="settings">Settings</button>
       </nav>
       <main class="hub-content" id="hubContent"></main>
-      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.5.1 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
+      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.5.2 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
     </div>
   </section>
 
@@ -217,7 +222,7 @@ const canvas = $('worldCanvas'), ctx = canvas.getContext('2d');
 const mapCanvas = $('mapCanvas'), mapCtx = mapCanvas.getContext('2d');
 const fogCanvas = document.createElement('canvas'), fogCtx = fogCanvas.getContext('2d');
 const viewport = $('viewport');
-const VERSION = '0.5.1';
+const VERSION = '0.5.2';
 const saveKey = 'dei_aei01_first_expedition_v01';
 
 const rooms = [
@@ -429,10 +434,12 @@ function renderMessageDetail(){
  host.innerHTML=`<div class="eyebrow">${escapeHtml(messageCategoryLabel(m.category))}${m.priority==='high'?' · PRIORITY':''}</div><h3>${escapeHtml(m.from)}</h3><div class="message-detail-meta"><div><strong>Sent:</strong> ${escapeHtml(formatTimestamp(m.timestamp))}</div><div><strong>Time source:</strong> ${m.timestamp?'Saved message timestamp · local display':'Original send time was not saved in the previous build'}</div><div><strong>Status:</strong> ${m.archived?'Archived':(m.read?'Read':'Unread')}</div></div><div class="message-body">${escapeHtml(m.text)}</div><div class="message-actions"><button class="secondary-btn" data-action="toggleMessageRead" data-message="${escapeHtml(m.id)}">Mark ${m.read?'unread':'read'}</button><button class="secondary-btn" data-action="toggleMessageArchive" data-message="${escapeHtml(m.id)}">${m.archived?'Restore to inbox':'Archive message'}</button>${m.link&&m.link.type==='journal'?'<button class="primary-btn" data-action="openMessageRecord" data-message="'+escapeHtml(m.id)+'">Open Discovery Journal</button>':(m.link&&m.link.type==='database'?'<button class="primary-btn" data-action="openMessageRecord" data-message="'+escapeHtml(m.id)+'">Open Research Database</button>':'')}</div>`;
 }
 function renderCommunications(){
+ const facilityScrollTop=facility.scrollTop;
  const selected=state.communications.find(m=>m.id===messageView.selectedId);
  if(!selected)messageView.selectedId=null;
  hubContent.innerHTML=`<div class="panel-page"><h2>Communications Center</h2><div class="message-layout"><section class="message-panel"><div class="eyebrow">Remote operations channel</div><h3>Inbox &amp; archive</h3><div class="message-toolbar"><input id="messageSearch" class="message-search" type="search" placeholder="Search sender or message text" value="${escapeHtml(messageView.query)}" aria-label="Search messages"><select id="messageCategory" aria-label="Filter message category"><option value="all">All categories</option><option value="briefings" ${messageView.category==='briefings'?'selected':''}>Mission briefings</option><option value="communications" ${messageView.category==='communications'?'selected':''}>Communications</option><option value="discoveries" ${messageView.category==='discoveries'?'selected':''}>Discoveries</option><option value="technical" ${messageView.category==='technical'?'selected':''}>Technical reports</option></select><select id="messageStatus" aria-label="Filter message status"><option value="all" ${messageView.status==='all'?'selected':''}>All messages</option><option value="unread" ${messageView.status==='unread'?'selected':''}>Unread only</option><option value="read" ${messageView.status==='read'?'selected':''}>Read only</option><option value="archived" ${messageView.status==='archived'?'selected':''}>Archived</option></select><select id="messageSort" aria-label="Sort messages"><option value="newest" ${messageView.sort==='newest'?'selected':''}>Newest first</option><option value="oldest" ${messageView.sort==='oldest'?'selected':''}>Oldest first</option></select></div><div class="message-list" role="list" aria-label="Messages"></div><div class="message-count" id="messageCount"></div><div class="message-actions"><button class="secondary-btn" data-action="archiveReadMessages">Archive read messages</button></div></section><section class="message-panel message-detail" aria-live="polite"></section></div></div>`;
  renderMessageList();renderMessageDetail();updateMessageBadge();
+ facility.scrollTop=facilityScrollTop;
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function startMission(){if(game.style.display==='grid')return;state.missionActive=true;facility.style.display='none';game.style.display='grid';resizeCanvas();addLog('Drone link engaged. Initial survey of the Access & Maintenance Sector is underway.');updateHud();renderHub();}
