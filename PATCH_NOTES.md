@@ -1,5 +1,19 @@
 # Patch Notes
 
+## 0.5.5 — Drone Deployment Hotfix
+
+### Added
+- One unified deployment activation path for mouse and touchscreen controls.
+
+### Changed
+- Drone deployment now relies on the click handler and iOS touch fallback.
+
+### Removed
+- Separate touchscreen pointer-up deployment handler.
+
+### Fixed
+- Reduced competing touch activation paths that could trigger or interfere with deployment.
+
 ## 0.5.4 — Mobile Viewport & Scroll Stability
 
 ### Added
