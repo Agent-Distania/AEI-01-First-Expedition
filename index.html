@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#09121a" />
-<title>AEI-01 | First Expedition · 0.5.5</title>
+<title>AEI-01 | First Expedition · 0.5.6</title>
 <style>
 :root{--bg:#081018;--panel:#101d28;--panel2:#142532;--line:#29404d;--muted:#8da4b2;--text:#e4edf0;--cyan:#76d4d2;--cyan2:#3eaaa9;--amber:#e6b76c;--red:#d97870;--green:#8cc6a1}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
@@ -116,7 +116,7 @@ html.touch-controls-enabled .touch-controls{display:block}
 </head>
 <body>
 <div id="app">
-  <section id="mainMenu" aria-label="Main menu"><div class="menu-shell"><div class="menu-brand"><div class="menu-mark">DEI</div><div><div class="menu-eyebrow">Deep Exploration Initiative</div><h1 class="menu-title">AEI-01<br>FIRST EXPEDITION</h1></div></div><p class="menu-subtitle">REMOTE EXPLORATION PROGRAM · FIELD SYSTEMS ONLINE</p><div class="menu-actions"><button class="menu-button primary" id="newGameButton">NEW GAME</button><button class="menu-button" id="continueButton">CONTINUE</button></div><div class="menu-foot">RESEARCH DRONE OPERATIONS &nbsp; / &nbsp; BUILD 0.5.5</div></div></section>
+  <section id="mainMenu" aria-label="Main menu"><div class="menu-shell"><div class="menu-brand"><div class="menu-mark">DEI</div><div><div class="menu-eyebrow">Deep Exploration Initiative</div><h1 class="menu-title">AEI-01<br>FIRST EXPEDITION</h1></div></div><p class="menu-subtitle">REMOTE EXPLORATION PROGRAM · FIELD SYSTEMS ONLINE</p><div class="menu-actions"><button class="menu-button primary" id="newGameButton">NEW GAME</button><button class="menu-button" id="continueButton">CONTINUE</button></div><div class="menu-foot">RESEARCH DRONE OPERATIONS &nbsp; / &nbsp; BUILD 0.5.6</div></div></section>
 
   <section id="facility">
     <div class="fac-shell">
@@ -140,7 +140,7 @@ html.touch-controls-enabled .touch-controls{display:block}
         <button class="nav-btn" data-tab="settings">Settings</button>
       </nav>
       <main class="hub-content" id="hubContent"></main>
-      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.5.5 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
+      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.5.6 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
     </div>
   </section>
 
@@ -225,7 +225,7 @@ const canvas = $('worldCanvas'), ctx = canvas.getContext('2d');
 const mapCanvas = $('mapCanvas'), mapCtx = mapCanvas.getContext('2d');
 const fogCanvas = document.createElement('canvas'), fogCtx = fogCanvas.getContext('2d');
 const viewport = $('viewport');
-const VERSION = '0.5.5';
+const VERSION = '0.5.6';
 const saveKey = 'dei_aei01_first_expedition_v01';
 
 const rooms = [
@@ -382,7 +382,7 @@ function renderHub(tab=hubTab){hubTab=tab;document.querySelectorAll('.nav-btn').
   hubContent.innerHTML=`<div class="panel-page"><h2>Expedition Logbook</h2><article class="hub-card" style="grid-column:1/-1"><div class="eyebrow">Field activity record</div>${state.logs.map(m=>`<div class="entry"><strong>${escapeHtml(formatTimestamp(m.timestamp))} · Field record${m.timestamp?'':' · legacy'}</strong><p>${escapeHtml(m.text)}</p></div>`).join('')||'<p class="small-copy">No records yet.</p>'}</article></div>`;
  } else if(tab==='patchnotes'){
   hubContent.innerHTML=`<div class="panel-page"><h2>Patch Notes</h2>
-   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.5.5</div><h3>Drone Deployment Hotfix</h3><div class="patch-group"><strong>Added</strong><p>One unified deployment activation path for mouse and touchscreen controls.</p></div><div class="patch-group"><strong>Changed</strong><p>Deployment starts through the click handler; duplicate touch-specific activation was removed.</p></div><div class="patch-group"><strong>Removed</strong><p>Separate touchscreen pointer-up deployment handler.</p></div><div class="patch-group"><strong>Fixed</strong><p>Reduced competing touch activation paths that could trigger or interfere with deployment.</p></div></article>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.5.6</div><h3>Touch Deployment Hotfix</h3><div class="patch-group"><strong>Added</strong><p>Separate, reliable activation paths for touch and mouse/keyboard.</p></div><div class="patch-group"><strong>Changed</strong><p>Touch uses pointerup directly; mouse and keyboard use click.</p></div><div class="patch-group"><strong>Removed</strong><p>Shared touch/click deployment path.</p></div><div class="patch-group"><strong>Fixed</strong><p>Reduced competing touch activation paths that could trigger or interfere with deployment.</p></div></article>
    <div class="patch-group"><strong>Added</strong><p>Title screen with New Game and Continue buttons.</p></div><div class="patch-group"><strong>Changed</strong><p>Facility screen is now entered from the main menu.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>None.</p></div></article>
    <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.4.2</div><h3>Mobile Layout Hotfix</h3><div class="patch-group"><strong>Added</strong><p>Responsive short-screen layout rules for phones, with a compact field header and status bar.</p></div><div class="patch-group"><strong>Changed</strong><p>The field viewport now uses the full available phone width when desktop side panels are hidden.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>Corrected the short-screen grid rule that left a narrow game view and unused black space on mobile; reduced header and status-bar overlap.</p></div></article>
    <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.4.1</div><h3>Deployment Hotfix</h3><div class="patch-group"><strong>Added</strong><p>Direct touchscreen activation for the Deploy Exploration Drone button.</p></div><div class="patch-group"><strong>Changed</strong><p>Deployment now ignores duplicate activation while the field view is already open.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>Improved mobile deployment activation to address the drone not launching from the facility screen.</p></div></article>
@@ -556,7 +556,8 @@ document.addEventListener('touchend',e=>{
 canvas.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;const wx=mouse.x+camera.x,wy=mouse.y+camera.y;const dx=wx-state.x,dy=wy-state.y;if(Math.hypot(dx,dy)>20){state.dirX=dx/Math.hypot(dx,dy);state.dirY=dy/Math.hypot(dx,dy);}});
 
 $('hubNav').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b)renderHub(b.dataset.tab);});
-// Deployment uses the shared click activation path; the global touchend fallback synthesizes one click on iOS when needed.
+// Touch deployment is handled on pointerup; mouse and keyboard continue through click.
+hubContent.addEventListener('pointerup',e=>{const b=e.target.closest('[data-action="deploy"]');if(!b||e.pointerType!=='touch')return;if(e.cancelable)e.preventDefault();startMission();},{capture:true});
 hubContent.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const action=b.dataset.action;if(action==='deploy')startMission();if(action==='brief')renderHub('communications');if(action==='openmap'){openModal('mapModal');}if(action==='research')purchaseUpgrade(b.dataset.upgrade);
  if(action==='selectMessage'){const m=state.communications.find(x=>x.id===b.dataset.message);if(m){messageView.selectedId=m.id;m.read=true;saveGame(true);refreshCommunications();}}
  if(action==='toggleMessageRead'){const m=state.communications.find(x=>x.id===b.dataset.message);if(m){m.read=!m.read;messageView.selectedId=m.id;saveGame(true);refreshCommunications();}}
