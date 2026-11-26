@@ -6,7 +6,7 @@ A browser-based exploration prototype about a research drone exploring an immens
 Open `index.html` in a modern browser. Keyboard and touchscreen controls are supported by the game build; device-specific behavior may vary by browser.
 
 ## Current version
-**0.5.2 — Mobile Scroll Stability Hotfix**
+**0.5.3 — Mobile Communications Scroll Redesign**
 
 ## Project notes
 - This repository contains the current standalone HTML game build.
@@ -16,19 +16,20 @@ Open `index.html` in a modern browser. Keyboard and touchscreen controls are sup
 ## Patch notes
 See the in-game Patch Notes for version history. The current release's summary:
 
-### 0.5.2 — Mobile Scroll Stability Hotfix
+### 0.5.3 — Mobile Communications Scroll Redesign
 
 **Added**
-- Stable small-viewport height handling for mobile facility scrolling.
+- One vertical scroll surface for the Communications Center on mobile.
 
 **Changed**
-- Communications rerenders preserve the facility page scroll position.
+- Message cards expand naturally in the facility page on phones.
 
 **Removed**
-- None.
+- Nested mobile message-list scrolling.
 
 **Fixed**
-- Adjusted mobile facility viewport to reduce scroll jumps when browser UI changes screen height.
+- Reduced competing vertical scroll containers that could cause page snapping or unexpected scroll movement.
+
 
 ### 0.5.1 — Communications Scrolling Hotfix
 
