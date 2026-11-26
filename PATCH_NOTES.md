@@ -1,5 +1,21 @@
 # Patch Notes
 
+## 0.5.4 — Mobile Viewport & Scroll Stability
+
+### Added
+- Stable small-viewport framing for the facility interface on phones.
+
+### Changed
+- Communications filters and message actions refresh only the relevant panels instead of rebuilding the entire page.
+- Mobile form controls use a 16px text size to prevent iOS Safari auto-zoom.
+
+### Removed
+- Manual facility scroll-position restoration during Communications refreshes.
+
+### Fixed
+- Corrected the mobile viewport-height fallback order.
+- Reduced focus loss and layout repositioning during message filtering and management.
+
 ## 0.4.0 — Infrastructure & Exploration Update
 
 ### Added
