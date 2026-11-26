@@ -104,10 +104,11 @@ html.touch-controls-enabled .touch-controls{display:block}
 .menu-button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 .menu-foot{border-top:1px solid #29404d;margin-top:40px;padding-top:16px;color:#6f8997;font-size:11px;letter-spacing:.13em}
 @media(max-width:480px){.menu-shell{padding:24px 20px}.menu-brand{gap:12px}.menu-mark{width:50px;height:50px;border-radius:12px;font-size:19px}.menu-actions{max-width:none}}
-/* 0.5.2 stable mobile viewport scrolling */
+/* 0.5.3 single mobile scroll surface for Communications */
 @media(max-width:700px){
  #app{height:100svh;height:100vh}
  #facility{height:100svh;height:100vh;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+ .message-list{max-height:none;overflow:visible;overscroll-behavior:auto;-webkit-overflow-scrolling:auto;touch-action:auto}
 }
 </style>
 </head>
@@ -137,7 +138,7 @@ html.touch-controls-enabled .touch-controls{display:block}
         <button class="nav-btn" data-tab="settings">Settings</button>
       </nav>
       <main class="hub-content" id="hubContent"></main>
-      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.5.2 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
+      <footer class="hub-footer"><span>AEI-01 FIELD SYSTEMS &nbsp; / &nbsp; REMOTE DRONE OPERATIONS</span><span>LOCAL PROTOTYPE BUILD 0.5.3 &nbsp;·&nbsp; PROGRESS SAVES IN THIS BROWSER</span></footer>
     </div>
   </section>
 
@@ -222,7 +223,7 @@ const canvas = $('worldCanvas'), ctx = canvas.getContext('2d');
 const mapCanvas = $('mapCanvas'), mapCtx = mapCanvas.getContext('2d');
 const fogCanvas = document.createElement('canvas'), fogCtx = fogCanvas.getContext('2d');
 const viewport = $('viewport');
-const VERSION = '0.5.2';
+const VERSION = '0.5.3';
 const saveKey = 'dei_aei01_first_expedition_v01';
 
 const rooms = [
@@ -425,7 +426,7 @@ function renderMessageList(){
  const list=filteredMessages();
  host.innerHTML=list.map(m=>`<button class="message-list-item ${messageView.selectedId===m.id?'selected':''}" data-action="selectMessage" data-message="${escapeHtml(m.id)}"><div class="message-list-top"><span class="message-sender">${escapeHtml(m.from)}</span><time class="message-list-time">${escapeHtml(m.timestamp?formatTimestamp(m.timestamp):'Time not recorded')}</time></div><div class="message-preview">${escapeHtml(m.text)}</div><div class="message-tags"><span class="message-tag">${escapeHtml(messageCategoryLabel(m.category))}</span>${!m.read?'<span class="message-tag unread">UNREAD</span>':''}${m.priority==='high'?'<span class="message-tag priority">PRIORITY</span>':''}${m.archived?'<span class="message-tag">ARCHIVED</span>':''}</div></button>`).join('')||'<div class="message-empty">No messages match these filters. Try another category or search term.</div>';
  const count=hubContent.querySelector('#messageCount');if(count)count.textContent=`${list.length} message${list.length===1?'':'s'} shown · ${unreadMessageCount()} unread in inbox`;
- host.scrollTop=previousScrollTop;
+ if(!window.matchMedia('(max-width:700px)').matches)host.scrollTop=previousScrollTop;
 }
 function renderMessageDetail(){
  const host=hubContent.querySelector('.message-detail');if(!host)return;
