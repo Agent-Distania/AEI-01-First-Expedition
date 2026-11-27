@@ -6,7 +6,7 @@ A browser-based exploration prototype about a research drone exploring an immens
 Open `index.html` in a modern browser. Keyboard and touchscreen controls are supported by the game build; device-specific behavior may vary by browser.
 
 ## Current version
-**0.5.7 — Deployment Hit-Test Fix**
+**0.5.8 — Direct Expedition Button Input**
 
 ## Project notes
 - This repository contains the current standalone HTML game build.
@@ -15,6 +15,38 @@ Open `index.html` in a modern browser. Keyboard and touchscreen controls are sup
 
 ## Patch notes
 See the in-game Patch Notes for version history. The current release's summary:
+
+### 0.5.8 — Direct Expedition Button Input
+
+**Added**
+- Direct touch and click handlers on Deploy Exploration Drone and Review Mission Brief.
+
+**Changed**
+- Touch activation is handled on the buttons themselves instead of relying on parent-level event delegation.
+- The document-wide touch fallback no longer intercepts these two controls.
+- Decorative hero artwork is explicitly kept behind the expedition controls.
+
+**Removed**
+- The competing parent-level pointer-up handler for deployment.
+
+**Fixed**
+- Reworked the two expedition buttons after the previous event-routing changes failed to activate reliably on mobile.
+
+### 0.5.7 — Deployment Hit-Test Fix
+
+**Added**
+- A clear touch-friendly hit area for expedition deployment.
+
+**Changed**
+- Decorative artwork no longer receives pointer input.
+- Deployment controls are layered above the artwork.
+
+**Removed**
+- None.
+
+**Fixed**
+- Prevented the decorative hero-panel circle from intercepting taps intended for Deploy Exploration Drone.
+
 
 ### 0.5.7 — Deployment Hit-Test Fix
 
