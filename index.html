@@ -537,7 +537,7 @@ function insideRect(x,y,r,pad=0){return x>=r.x+pad&&x<=r.x+r.w-pad&&y>=r.y+pad&&
 const DRONE_COLLISION_RADIUS=10;
 function pointOnFloor(x,y){return rooms.some(r=>insideRect(x,y,r,0));}
 function circleHitsRect(x,y,r,rect){
- const closestX=clamp(x,rect.x,rect.x+rect.w),closestY=clamp(y,rect.y,rect.y+rect.h);
+ const closestX=Math.max(rect.x,Math.min(rect.x+rect.w,x)),closestY=Math.max(rect.y,Math.min(rect.y+rect.h,y));
  const dx=x-closestX,dy=y-closestY;
  return dx*dx+dy*dy<r*r;
 }
