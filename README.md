@@ -6,7 +6,7 @@ A browser-based exploration prototype about a research drone exploring an immens
 Open `index.html` in a modern browser. Keyboard and touchscreen controls are supported by the game build; device-specific behavior may vary by browser.
 
 ## Current version
-**0.5.6 — Touch Deployment Hotfix**
+**0.5.7 — Deployment Hit-Test Fix**
 
 ## Project notes
 - This repository contains the current standalone HTML game build.
@@ -16,19 +16,49 @@ Open `index.html` in a modern browser. Keyboard and touchscreen controls are sup
 ## Patch notes
 See the in-game Patch Notes for version history. The current release's summary:
 
-### 0.5.5 — Drone Deployment Hotfix
+### 0.5.7 — Deployment Hit-Test Fix
 
 **Added**
-- Separate, reliable activation paths for touch and mouse/keyboard.
+- A clear touch-friendly hit area for expedition deployment.
 
 **Changed**
-- Touch uses pointerup directly; mouse and keyboard use click.
+- Decorative artwork no longer receives pointer input.
+- Deployment controls are layered above the artwork.
 
 **Removed**
-- Shared touch/click deployment path.
+- None.
 
 **Fixed**
-- Restored direct touchscreen deployment activation while retaining duplicate-start protection.
+- Prevented the decorative hero-panel circle from intercepting taps intended for Deploy Exploration Drone.
+
+### 0.5.6 — Touch Deployment Hotfix
+
+**Added**
+- Dedicated touch pointer-up activation for Deploy Exploration Drone.
+
+**Changed**
+- Mouse and keyboard continue through the click activation path.
+- Duplicate deployment is guarded.
+
+**Removed**
+- None.
+
+**Fixed**
+- Restored a direct touch activation path after the prior input refactor.
+
+### 0.5.5 — Deployment Input Refactor (superseded)
+
+**Added**
+- A delegated click path and a general touchscreen activation fallback.
+
+**Changed**
+- Direct touch pointer-up handling was removed in this release.
+
+**Removed**
+- The dedicated touch deployment handler.
+
+**Fixed**
+- None. This release was superseded by 0.5.6 after touchscreen deployment stopped responding.
 
 ### 0.5.4 — Mobile Viewport & Scroll Stability
 
