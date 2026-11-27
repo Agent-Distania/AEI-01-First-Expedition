@@ -6,7 +6,7 @@ A browser-based exploration prototype about a research drone exploring an immens
 Open `index.html` in a modern browser. Keyboard and touchscreen controls are supported by the game build; device-specific behavior may vary by browser.
 
 ## Current version
-**0.5.9 — Full Interface & Input Audit**
+**0.6.0 — Playable Area Collision Cleanup**
 
 ## Project notes
 - This repository contains the current standalone HTML game build.
@@ -15,6 +15,24 @@ Open `index.html` in a modern browser. Keyboard and touchscreen controls are sup
 
 ## Patch notes
 See the in-game Patch Notes for version history. The current release's summary:
+
+### 0.6.0 — Playable Area Collision Cleanup
+
+**Added**
+- Physical wall segments along room boundaries, with openings generated where the existing room rectangles connect.
+- Collision for the three visible equipment housings in the Power Distribution Chamber.
+
+**Changed**
+- Drone collision now uses a compact circular footprint against exact object rectangles.
+- Room outlines are rendered as wall segments rather than four independent room borders.
+- Storage and utility equipment are rendered once, while their matching collision footprints remain active.
+
+**Removed**
+- The extra 14-pixel padding previously added around every obstacle.
+
+**Fixed**
+- Corrected the collision positions and dimensions for both storage racks and the two Utility Room housings.
+- Wall boundaries and doorway openings now use the same room geometry as the playable floor.
 
 ### 0.5.9 — Full Interface & Input Audit
 
