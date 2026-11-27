@@ -6,7 +6,7 @@ A browser-based exploration prototype about a research drone exploring an immens
 Open `index.html` in a modern browser. Keyboard and touchscreen controls are supported by the game build; device-specific behavior may vary by browser.
 
 ## Current version
-**0.5.8 — Direct Expedition Button Input**
+**0.5.9 — Full Interface & Input Audit**
 
 ## Project notes
 - This repository contains the current standalone HTML game build.
@@ -16,21 +16,36 @@ Open `index.html` in a modern browser. Keyboard and touchscreen controls are sup
 ## Patch notes
 See the in-game Patch Notes for version history. The current release's summary:
 
+### 0.5.9 — Full Interface & Input Audit
+
+**Added**
+- Direct button-level touch and click activation for Deploy Exploration Drone and Review Mission Brief.
+
+**Changed**
+- Touch activation is handled directly by the two expedition controls.
+- Decorative hero artwork is placed behind the content.
+- The document-level touch fallback skips these two controls.
+
+**Removed**
+- The parent-level deployment pointer-up handler.
+
+**Fixed**
+- Reworked the two expedition actions after they remained unresponsive.
+- Corrected a malformed Patch Notes card structure.
+
 ### 0.5.8 — Direct Expedition Button Input
 
 **Added**
-- Direct touch and click handlers on Deploy Exploration Drone and Review Mission Brief.
+- Direct touch and click handlers on the expedition actions.
 
 **Changed**
-- Touch activation is handled on the buttons themselves instead of relying on parent-level event delegation.
-- The document-wide touch fallback no longer intercepts these two controls.
-- Decorative hero artwork is explicitly kept behind the expedition controls.
+- Separated primary expedition actions from the shared parent click handler.
 
 **Removed**
-- The competing parent-level pointer-up handler for deployment.
+- None.
 
 **Fixed**
-- Reworked the two expedition buttons after the previous event-routing changes failed to activate reliably on mobile.
+- Improved input routing for the expedition controls.
 
 ### 0.5.7 — Deployment Hit-Test Fix
 
