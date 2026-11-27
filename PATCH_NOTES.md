@@ -1,5 +1,20 @@
 # Patch Notes
 
+## 0.5.7 — Deployment Hit-Test Fix
+
+### Added
+- A clear touch-friendly hit area for expedition deployment.
+
+### Changed
+- Decorative artwork no longer receives pointer input.
+- Deployment controls are layered above the artwork.
+
+### Removed
+- None.
+
+### Fixed
+- Prevented the decorative hero-panel circle from intercepting taps intended for Deploy Exploration Drone.
+
 ## 0.5.6 — Touch Deployment Hotfix
 
 ### Added
@@ -13,6 +28,20 @@
 
 ### Fixed
 - Restored direct touchscreen deployment activation while retaining duplicate-start protection.
+
+## 0.5.5 — Deployment Input Refactor (superseded)
+
+### Added
+- A delegated click path and a general touchscreen activation fallback.
+
+### Changed
+- Direct touch pointer-up handling was removed in this release.
+
+### Removed
+- The dedicated touch deployment handler.
+
+### Fixed
+- None. This release was superseded by 0.5.6 after touchscreen deployment stopped responding.
 
 ## 0.5.4 — Mobile Viewport & Scroll Stability
 
