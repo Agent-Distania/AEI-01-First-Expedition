@@ -1,5 +1,36 @@
 # Patch Notes
 
+## 0.5.8 — Direct Expedition Button Input
+
+### Added
+- Direct touch and click handlers on Deploy Exploration Drone and Review Mission Brief.
+
+### Changed
+- Touch activation is handled on the buttons themselves instead of relying on parent-level event delegation.
+- The document-wide touch fallback no longer intercepts these two controls.
+- Decorative hero artwork is explicitly kept behind the expedition controls.
+
+### Removed
+- The competing parent-level pointer-up handler for deployment.
+
+### Fixed
+- Reworked the two expedition buttons after the previous event-routing changes failed to activate reliably on mobile.
+
+## 0.5.7 — Deployment Hit-Test Fix
+
+### Added
+- A clear touch-friendly hit area for expedition deployment.
+
+### Changed
+- Decorative artwork no longer receives pointer input.
+- Deployment controls are layered above the artwork.
+
+### Removed
+- None.
+
+### Fixed
+- Prevented the decorative hero-panel circle from intercepting taps intended for Deploy Exploration Drone.
+
 ## 0.5.7 — Deployment Hit-Test Fix
 
 ### Added
