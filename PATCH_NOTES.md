@@ -1,5 +1,26 @@
 # Patch Notes
 
+## 0.6.0 — Playable Area Collision Cleanup
+
+### Added
+- Physical room-wall segments generated from the existing room layout.
+- Clear openings at overlapping and adjoining room connections.
+- Collision for the three visible equipment housings in the Power Distribution Chamber.
+
+### Changed
+- Drone collision uses a compact circular footprint against each obstacle's actual rectangle.
+- Room boundaries are now drawn as connected wall segments rather than independent rectangle outlines.
+- Storage racks and Utility Room housings use the same dimensions for their visible details and collision footprints; duplicate prop rendering was removed.
+
+### Removed
+- The fixed 14-pixel collision expansion that was added around every object.
+
+### Fixed
+- Storage rack collision rectangles were shifted and oversized compared with the displayed racks.
+- The Utility Room pump and power housing collision rectangles did not match the displayed equipment.
+- Several visible Power Distribution Chamber objects had no collision footprint.
+- Wall boundaries now block movement at their actual positions while leaving the existing room connections traversable.
+
 ## 0.5.9 — Full Interface & Input Audit
 
 ### Added
