@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#09121a" />
-<title>AEI-01 | First Expedition · 0.5.9</title>
+<title>AEI-01 | First Expedition · 0.6.0</title>
 <style>
 :root{--bg:#081018;--panel:#101d28;--panel2:#142532;--line:#29404d;--muted:#8da4b2;--text:#e4edf0;--cyan:#76d4d2;--cyan2:#3eaaa9;--amber:#e6b76c;--red:#d97870;--green:#8cc6a1}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
@@ -225,7 +225,7 @@ const canvas = $('worldCanvas'), ctx = canvas.getContext('2d');
 const mapCanvas = $('mapCanvas'), mapCtx = mapCanvas.getContext('2d');
 const fogCanvas = document.createElement('canvas'), fogCtx = fogCanvas.getContext('2d');
 const viewport = $('viewport');
-const VERSION = '0.5.9';
+const VERSION = '0.6.0';
 const saveKey = 'dei_aei01_first_expedition_v01';
 
 const rooms = [
@@ -254,14 +254,20 @@ const roomProfiles = {
 const requiredSurveyIds = ['alloy','relay','imprint'];
 const solids = [
   {x:470,y:160,w:105,h:32,type:'crate',label:'sealed cargo'},
-  {x:970,y:125,w:44,h:130,type:'rack',label:'storage rack'},
-  {x:1140,y:125,w:38,h:130,type:'rack',label:'storage rack'},
-  {x:945,y:555,w:65,h:100,type:'machine',label:'pump housing'},
-  {x:1160,y:555,w:48,h:120,type:'machine',label:'power housing'},
+  // These collision footprints now match the storage racks drawn in drawRoomDetails.
+  {x:990,y:120,w:30,h:140,type:'rack',label:'storage rack',detailRendered:true},
+  {x:1160,y:120,w:30,h:140,type:'rack',label:'storage rack',detailRendered:true},
+  // Utility housings use their actual visible dimensions and positions.
+  {x:1010,y:535,w:45,h:150,type:'machine',label:'pump housing',detailRendered:true},
+  {x:1120,y:540,w:24,h:95,type:'machine',label:'power housing',detailRendered:true},
   {x:555,y:640,w:48,h:42,type:'crate',label:'service case'},
   {x:820,y:665,w:30,h:56,type:'pillar',label:'support'},
   {x:1370,y:865,w:50,h:120,type:'pillar',label:'station support'},
-  {x:1170,y:865,w:32,h:100,type:'pillar',label:'station support'}
+  {x:1170,y:865,w:32,h:100,type:'pillar',label:'station support'},
+  // Power Distribution Chamber equipment is drawn as room detail, but also needs collision.
+  {x:1400,y:565,w:54,h:105,type:'machine',label:'distribution housing',detailRendered:true},
+  {x:1480,y:565,w:54,h:105,type:'machine',label:'distribution housing',detailRendered:true},
+  {x:1430,y:690,w:48,h:55,type:'machine',label:'distribution panel',detailRendered:true}
 ];
 const targets = [
   {id:'alloy',name:'Uncatalogued Alloy Sample',room:'Storage Room',roomId:'storage',category:'Material',required:true,x:1060,y:330,range:190,scanned:false,points:35,description:'The sample is integrated into a storage fixture. Its surface structure does not match the facility materials catalogue. Composition remains unresolved.',detail:'Material analysis stored. Sample composition remains unclassified.'},
@@ -280,6 +286,53 @@ const interactables = [
   {id:'serviceWingConsole',name:'Service Wing Access Console',x:1210,y:645,range:90,kind:'serviceDoor'}
 ];
 const roomLabels = rooms.filter(r=>r.name);
+function subtractWallIntervals(start,end,cuts){
+ const ordered=cuts.filter(([a,b])=>b>a&&a<end&&b>start).map(([a,b])=>[Math.max(start,a),Math.min(end,b)]).sort((a,b)=>a[0]-b[0]);
+ const merged=[];
+ for(const cut of ordered){
+  const last=merged[merged.length-1];
+  if(last&&cut[0]<=last[1])last[1]=Math.max(last[1],cut[1]);else merged.push(cut.slice());
+ }
+ const result=[];let cursor=start;
+ for(const [a,b] of merged){if(a>cursor)result.push([cursor,a]);cursor=Math.max(cursor,b);}
+ if(cursor<end)result.push([cursor,end]);
+ return result.filter(([a,b])=>b-a>1);
+}
+function buildRoomWalls(){
+ const thickness=8,walls=[];
+ rooms.forEach((room,index)=>{
+  const edges=[
+   {side:'top',fixed:room.y,start:room.x,end:room.x+room.w},
+   {side:'bottom',fixed:room.y+room.h,start:room.x,end:room.x+room.w},
+   {side:'left',fixed:room.x,start:room.y,end:room.y+room.h},
+   {side:'right',fixed:room.x+room.w,start:room.y,end:room.y+room.h}
+  ];
+  for(const edge of edges){
+   const cuts=[];
+   for(let j=0;j<rooms.length;j++){
+    if(j===index)continue;
+    const other=rooms[j];let crosses=false,a=0,b=0;
+    if(edge.side==='top'||edge.side==='bottom'){
+     const y=edge.fixed;
+     crosses=edge.side==='top'?(other.y<y&&other.y+other.h>=y):(other.y<=y&&other.y+other.h>y);
+     a=Math.max(edge.start,other.x);b=Math.min(edge.end,other.x+other.w);
+    }else{
+     const x=edge.fixed;
+     crosses=edge.side==='left'?(other.x<x&&other.x+other.w>=x):(other.x<=x&&other.x+other.w>x);
+     a=Math.max(edge.start,other.y);b=Math.min(edge.end,other.y+other.h);
+    }
+    if(crosses&&b>a)cuts.push([a,b]);
+   }
+   for(const [a,b] of subtractWallIntervals(edge.start,edge.end,cuts)){
+    if(edge.side==='top'||edge.side==='bottom')walls.push({x:a,y:edge.fixed-thickness/2,w:b-a,h:thickness,type:'wall'});
+    else walls.push({x:edge.fixed-thickness/2,y:a,w:thickness,h:b-a,type:'wall'});
+   }
+  }
+ });
+ return walls;
+}
+const roomWalls=buildRoomWalls();
+
 let state = {
   x:290,y:260,dirX:1,dirY:0,battery:100,condition:100,data:0,scanned:[],visited:['bay'],
   logs:[{time:'00:00',timestamp:new Date().toISOString(),text:'Remote link established. Drone systems responding normally.'}],
@@ -383,7 +436,8 @@ function renderHub(tab=hubTab){hubTab=tab;document.querySelectorAll('.nav-btn').
   hubContent.innerHTML=`<div class="panel-page"><h2>Expedition Logbook</h2><article class="hub-card" style="grid-column:1/-1"><div class="eyebrow">Field activity record</div>${state.logs.map(m=>`<div class="entry"><strong>${escapeHtml(formatTimestamp(m.timestamp))} · Field record${m.timestamp?'':' · legacy'}</strong><p>${escapeHtml(m.text)}</p></div>`).join('')||'<p class="small-copy">No records yet.</p>'}</article></div>`;
  } else if(tab==='patchnotes'){
   hubContent.innerHTML=`<div class="panel-page"><h2>Patch Notes</h2>
-   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.5.9</div><h3>Full Interface &amp; Input Audit</h3><div class="patch-group"><strong>Added</strong><p>Direct button-level touch and click activation for Deploy Exploration Drone and Review Mission Brief.</p></div><div class="patch-group"><strong>Changed</strong><p>Touch activation is handled directly by the two expedition controls. The decorative hero artwork is placed behind the content, and the document-level touch fallback skips those controls.</p></div><div class="patch-group"><strong>Removed</strong><p>The parent-level deployment pointer-up handler.</p></div><div class="patch-group"><strong>Fixed</strong><p>Reworked the two unresponsive expedition actions and corrected a malformed Patch Notes card structure.</p></div></article>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Current build · 0.6.0</div><h3>Playable Area Collision Cleanup</h3><div class="patch-group"><strong>Added</strong><p>Physical room-wall segments with openings at the existing room connections, so visible wall boundaries now match the walkable layout.</p></div><div class="patch-group"><strong>Changed</strong><p>Drone collision now uses a compact circular footprint against the real object dimensions instead of oversized rectangular padding. The room outlines are drawn as continuous wall segments with clear passage openings.</p></div><div class="patch-group"><strong>Removed</strong><p>Extra collision padding around every object, and duplicate rendering of storage and utility equipment already drawn into the room.</p></div><div class="patch-group"><strong>Fixed</strong><p>Corrected misaligned collision footprints for storage racks and utility housings, and added collision to the visible Power Distribution Chamber equipment.</p></div></article>
+   <article class="hub-card" style="grid-column:1/-1;min-height:0"><h3>Full Interface &amp; Input Audit</h3><div class="patch-group"><strong>Added</strong><p>Direct button-level touch and click activation for Deploy Exploration Drone and Review Mission Brief.</p></div><div class="patch-group"><strong>Changed</strong><p>Touch activation is handled directly by the two expedition controls. The decorative hero artwork is placed behind the content, and the document-level touch fallback skips those controls.</p></div><div class="patch-group"><strong>Removed</strong><p>The parent-level deployment pointer-up handler.</p></div><div class="patch-group"><strong>Fixed</strong><p>Reworked the two unresponsive expedition actions and corrected a malformed Patch Notes card structure.</p></div></article>
    <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Previous build · 0.5.8</div><h3>Direct Expedition Button Input</h3><div class="patch-group"><strong>Added</strong><p>Direct touch and click handlers for the expedition actions.</p></div><div class="patch-group"><strong>Changed</strong><p>Separated primary expedition actions from the shared parent click handler.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>Improved input routing for the expedition controls.</p></div></article>
    <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Previous build · 0.5.7</div><h3>Deployment Hit-Test Fix</h3><div class="patch-group"><strong>Added</strong><p>A clear touch-friendly hit area for expedition deployment.</p></div><div class="patch-group"><strong>Changed</strong><p>Decorative artwork no longer receives pointer input, and deployment controls are layered above it.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>Prevented the decorative hero-panel circle from intercepting deployment taps.</p></div></article>
    <article class="hub-card" style="grid-column:1/-1;min-height:0"><div class="eyebrow">Previous build · 0.5.0</div><h3>Main Menu Update</h3><div class="patch-group"><strong>Added</strong><p>Title screen with New Game and Continue buttons.</p></div><div class="patch-group"><strong>Changed</strong><p>Facility screen is now entered from the main menu.</p></div><div class="patch-group"><strong>Removed</strong><p>None.</p></div><div class="patch-group"><strong>Fixed</strong><p>None.</p></div></article>
@@ -480,9 +534,25 @@ function renderLog(){$('logContent').innerHTML=state.logs.map(m=>`<div class="lo
 
 // Geometry and movement
 function insideRect(x,y,r,pad=0){return x>=r.x+pad&&x<=r.x+r.w-pad&&y>=r.y+pad&&y<=r.y+r.h-pad;}
+const DRONE_COLLISION_RADIUS=10;
 function pointOnFloor(x,y){return rooms.some(r=>insideRect(x,y,r,0));}
-function blocked(x,y){for(const s of solids){if(x>s.x-14&&x<s.x+s.w+14&&y>s.y-14&&y<s.y+s.h+14)return true;}if(!state.routeUnlocked&&x>1180&&x<1300&&y>800&&y<820)return true;if(!state.serviceWingUnlocked&&x>1258&&x<1282&&y>566&&y<724)return true;return false;}
-function canStand(x,y){const r=13;const pts=[[x,y],[x-r,y],[x+r,y],[x,y-r],[x,y+r],[x-r*.7,y-r*.7],[x+r*.7,y-r*.7],[x-r*.7,y+r*.7],[x+r*.7,y+r*.7]];return pts.every(([px,py])=>pointOnFloor(px,py)&&!blocked(px,py));}
+function circleHitsRect(x,y,r,rect){
+ const closestX=clamp(x,rect.x,rect.x+rect.w),closestY=clamp(y,rect.y,rect.y+rect.h);
+ const dx=x-closestX,dy=y-closestY;
+ return dx*dx+dy*dy<r*r;
+}
+function blocked(x,y){
+ if(solids.some(s=>circleHitsRect(x,y,DRONE_COLLISION_RADIUS,s)))return true;
+ if(roomWalls.some(w=>circleHitsRect(x,y,DRONE_COLLISION_RADIUS,w)))return true;
+ if(!state.routeUnlocked&&circleHitsRect(x,y,DRONE_COLLISION_RADIUS,{x:1190,y:806,w:100,h:8}))return true;
+ if(!state.serviceWingUnlocked&&circleHitsRect(x,y,DRONE_COLLISION_RADIUS,{x:1260,y:570,w:18,h:150}))return true;
+ return false;
+}
+function canStand(x,y){
+ const r=DRONE_COLLISION_RADIUS,points=[[x,y]];
+ for(let i=0;i<16;i++){const angle=i*Math.PI/8;points.push([x+Math.cos(angle)*r,y+Math.sin(angle)*r]);}
+ return points.every(([px,py])=>pointOnFloor(px,py))&&!blocked(x,y);
+}
 function currentRoom(){return rooms.find(r=>insideRect(state.x,state.y,r,0)&&r.name)||null;}
 function discoverRoom(){const room=currentRoom();if(room&&!state.visited.includes(room.id)){state.visited.push(room.id);addLog('New area charted: '+room.name+'.');addMessage('Dr. Mira Voss · Expedition Lead','The drone has entered a newly charted area: '+room.name+'. Room dimensions and visible infrastructure have been added to the survey record.','discoveries','normal',{type:'journal',id:room.id});showToast('Area charted: '+room.name);updateHud();saveGame(true);}}
 function nearbyInteractable(){let best=null,dist=1e9;for(const o of interactables){if(o.kind==='sample'&&(!state.scanned.includes('alloy')||carryingSample()||recoveredSample()))continue;const d=Math.hypot(state.x-o.x,state.y-o.y);if(d<o.range&&d<dist){best=o;dist=d;}}return best;}
@@ -500,7 +570,7 @@ function interact(){const o=nearbyInteractable();if(!o){showToast('No accessible
 }
 
 function resizeCanvas(){const rect=viewport.getBoundingClientRect();if(rect.width<10||rect.height<10)return;dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);}
-function drawFloor(r){ctx.fillStyle=(r.id==='bay')?'#25343b':(r.id==='transit'?'#202f37':'#202c33');ctx.fillRect(r.x,r.y,r.w,r.h);ctx.save();ctx.beginPath();ctx.rect(r.x,r.y,r.w,r.h);ctx.clip();ctx.strokeStyle='#34444b';ctx.lineWidth=1;const step=42;for(let x=Math.floor(r.x/step)*step;x<r.x+r.w;x+=step){ctx.beginPath();ctx.moveTo(x,r.y);ctx.lineTo(x,r.y+r.h);ctx.stroke();}for(let y=Math.floor(r.y/step)*step;y<r.y+r.h;y+=step){ctx.beginPath();ctx.moveTo(r.x,y);ctx.lineTo(r.x+r.w,y);ctx.stroke();}ctx.strokeStyle='#111d23';ctx.lineWidth=2;for(let x=r.x+9;x<r.x+r.w;x+=step){for(let y=r.y+9;y<r.y+r.h;y+=step){ctx.strokeRect(x,y,step-18,step-18);}}ctx.restore();ctx.strokeStyle='#71818a';ctx.lineWidth=5;ctx.strokeRect(r.x+2.5,r.y+2.5,r.w-5,r.h-5);ctx.strokeStyle='#a4b4ba';ctx.lineWidth=1;ctx.strokeRect(r.x+7,r.y+7,r.w-14,r.h-14);}
+function drawFloor(r){ctx.fillStyle=(r.id==='bay')?'#25343b':(r.id==='transit'?'#202f37':'#202c33');ctx.fillRect(r.x,r.y,r.w,r.h);ctx.save();ctx.beginPath();ctx.rect(r.x,r.y,r.w,r.h);ctx.clip();ctx.strokeStyle='#34444b';ctx.lineWidth=1;const step=42;for(let x=Math.floor(r.x/step)*step;x<r.x+r.w;x+=step){ctx.beginPath();ctx.moveTo(x,r.y);ctx.lineTo(x,r.y+r.h);ctx.stroke();}for(let y=Math.floor(r.y/step)*step;y<r.y+r.h;y+=step){ctx.beginPath();ctx.moveTo(r.x,y);ctx.lineTo(r.x+r.w,y);ctx.stroke();}ctx.strokeStyle='#111d23';ctx.lineWidth=2;for(let x=r.x+9;x<r.x+r.w;x+=step){for(let y=r.y+9;y<r.y+r.h;y+=step){ctx.strokeRect(x,y,step-18,step-18);}}ctx.restore();}
 function drawRoomDetails(){ctx.save();ctx.textAlign='left';ctx.font='600 10px ui-monospace,monospace';for(const r of roomLabels){ctx.fillStyle='#78909a';ctx.fillText(r.name,r.x+18,r.y+24);}ctx.restore();
   // Power Distribution Chamber equipment: cable trays and service housings.
   ctx.save();ctx.strokeStyle='#5e737a';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(1385,535);ctx.lineTo(1535,535);ctx.lineTo(1535,745);ctx.stroke();ctx.beginPath();ctx.moveTo(1385,775);ctx.lineTo(1385,535);ctx.stroke();ctx.fillStyle='#394b52';ctx.fillRect(1400,565,54,105);ctx.fillRect(1480,565,54,105);ctx.fillStyle='#71868b';ctx.strokeStyle='#a0b4b9';ctx.lineWidth=2;ctx.strokeRect(1400,565,54,105);ctx.strokeRect(1480,565,54,105);for(const [x,y] of [[1412,578],[1426,578],[1440,578],[1492,578],[1506,578],[1520,578]]){ctx.fillStyle='#76d4d2';ctx.fillRect(x,y,5,5);}ctx.fillStyle='#24353c';ctx.fillRect(1430,690,48,55);ctx.strokeStyle='#8a9ba0';ctx.strokeRect(1430,690,48,55);ctx.fillStyle='#7bc9bd';ctx.fillRect(1441,702,24,4);ctx.fillRect(1441,715,24,4);ctx.restore();
@@ -514,6 +584,17 @@ function drawRoomDetails(){ctx.save();ctx.textAlign='left';ctx.font='600 10px ui
  ctx.save();ctx.fillStyle='#59686c';ctx.fillRect(648,585,76,11);ctx.fillStyle='#9aada9';for(let i=0;i<8;i++){ctx.fillRect(653+i*8,588,4,5);}ctx.restore();
  // Transit rails
  ctx.save();ctx.fillStyle='#161f24';ctx.fillRect(1135,895,350,72);ctx.fillStyle='#84949a';ctx.fillRect(1135,900,350,4);ctx.fillRect(1135,958,350,4);for(let x=1150;x<1470;x+=28){ctx.fillStyle='#6b7b80';ctx.fillRect(x,896,4,68);}ctx.restore();
+}
+function drawRoomWalls(){
+ ctx.save();
+ for(const wall of roomWalls){
+  ctx.fillStyle='#101a20';ctx.fillRect(wall.x,wall.y,wall.w,wall.h);
+  ctx.fillStyle='#657981';ctx.fillRect(wall.x+1,wall.y+1,Math.max(0,wall.w-2),Math.max(0,wall.h-2));
+  ctx.fillStyle='#a4b4ba';
+  if(wall.w>=wall.h)ctx.fillRect(wall.x+2,wall.y+1,Math.max(0,wall.w-4),1);
+  else ctx.fillRect(wall.x+1,wall.y+2,1,Math.max(0,wall.h-4));
+ }
+ ctx.restore();
 }
 function drawSolid(s){ctx.save();if(s.type==='crate'){ctx.fillStyle='#46545a';ctx.fillRect(s.x,s.y,s.w,s.h);ctx.strokeStyle='#a0adb0';ctx.lineWidth=1.4;ctx.strokeRect(s.x+3,s.y+3,s.w-6,s.h-6);ctx.beginPath();ctx.moveTo(s.x+5,s.y+5);ctx.lineTo(s.x+s.w-5,s.y+s.h-5);ctx.moveTo(s.x+s.w-5,s.y+5);ctx.lineTo(s.x+5,s.y+s.h-5);ctx.stroke();}else if(s.type==='rack'){ctx.fillStyle='#39474e';ctx.fillRect(s.x,s.y,s.w,s.h);ctx.strokeStyle='#91a0a4';ctx.strokeRect(s.x,s.y,s.w,s.h);for(let y=s.y+22;y<s.y+s.h;y+=34){ctx.fillStyle='#66777d';ctx.fillRect(s.x+4,y,s.w-8,4);}}else if(s.type==='machine'){ctx.fillStyle='#35474e';ctx.fillRect(s.x,s.y,s.w,s.h);ctx.strokeStyle='#8a9ba0';ctx.lineWidth=2;ctx.strokeRect(s.x+3,s.y+3,s.w-6,s.h-6);ctx.fillStyle='#75c6bc';ctx.fillRect(s.x+10,s.y+10,8,5);ctx.fillStyle='#1a2b32';ctx.fillRect(s.x+10,s.y+27,s.w-20,s.h-40);ctx.strokeStyle='#71868b';ctx.strokeRect(s.x+10,s.y+27,s.w-20,s.h-40);}else{ctx.fillStyle='#56676d';ctx.fillRect(s.x,s.y,s.w,s.h);ctx.strokeStyle='#a5b5b8';ctx.strokeRect(s.x,s.y,s.w,s.h);}ctx.restore();}
 function drawTarget(t){ctx.save();const scanned=t.scanned;const pulse=.5+.5*Math.sin(state.gameTime*2.2);ctx.globalAlpha=scanned?.9:.45+.35*pulse;ctx.strokeStyle=scanned?'#87c9a3':'#d5b77b';ctx.fillStyle=scanned?'#5b9a7b':'#ba985d';ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(t.x,t.y,scanned?12:10,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.beginPath();ctx.arc(t.x,t.y,scanned?18:17,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;ctx.fillStyle='#d9e2df';ctx.font='9px ui-monospace,monospace';ctx.fillText(scanned?'RECORDED':(t.required?'SURVEY':'POINT OF INTEREST'),t.x+22,t.y+3);ctx.restore();}
@@ -530,7 +611,7 @@ function drawFog(w,h){
   if(state.flashlight){fogCtx.translate(sx,sy);fogCtx.rotate(Math.atan2(state.dirY,state.dirX));const cone=fogCtx.createRadialGradient(0,0,12,0,0,390);cone.addColorStop(0,'rgba(0,0,0,.98)');cone.addColorStop(.72,'rgba(0,0,0,.72)');cone.addColorStop(1,'rgba(0,0,0,0)');fogCtx.fillStyle=cone;fogCtx.beginPath();fogCtx.moveTo(0,0);fogCtx.arc(0,0,390,-.56,.56);fogCtx.closePath();fogCtx.fill();}
   fogCtx.restore();ctx.drawImage(fogCanvas,0,0);
 }
-function renderWorld(w,h){ctx.clearRect(0,0,w,h);camera.x=Math.max(0,Math.min(1600-w,state.x-w/2));camera.y=Math.max(0,Math.min(1120-h,state.y-h/2));ctx.save();ctx.translate(-camera.x,-camera.y);ctx.fillStyle='#101b21';ctx.fillRect(0,0,1600,1120);for(const r of rooms)drawFloor(r);drawRoomDetails();for(const s of solids)drawSolid(s);drawInteractables();drawBarrier();for(const t of targets)drawTarget(t);drawLight();drawDrone();if(state.scannerPulse>0){ctx.strokeStyle=`rgba(115,214,207,${Math.min(1,state.scannerPulse*1.5)})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(state.x,state.y,260*(1-state.scannerPulse/.7)+10,0,Math.PI*2);ctx.stroke();}ctx.restore();drawFog(w,h);}
+function renderWorld(w,h){ctx.clearRect(0,0,w,h);camera.x=Math.max(0,Math.min(1600-w,state.x-w/2));camera.y=Math.max(0,Math.min(1120-h,state.y-h/2));ctx.save();ctx.translate(-camera.x,-camera.y);ctx.fillStyle='#101b21';ctx.fillRect(0,0,1600,1120);for(const r of rooms)drawFloor(r);drawRoomDetails();drawRoomWalls();for(const s of solids){if(!s.detailRendered)drawSolid(s);}drawInteractables();drawBarrier();for(const t of targets)drawTarget(t);drawLight();drawDrone();if(state.scannerPulse>0){ctx.strokeStyle=`rgba(115,214,207,${Math.min(1,state.scannerPulse*1.5)})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(state.x,state.y,260*(1-state.scannerPulse/.7)+10,0,Math.PI*2);ctx.stroke();}ctx.restore();drawFog(w,h);}
 function resizeMap(){const rect=mapCanvas.getBoundingClientRect();if(rect.width<20||rect.height<20)return;const d=Math.max(1,Math.min(2,window.devicePixelRatio||1));mapCanvas.width=rect.width*d;mapCanvas.height=rect.height*d;mapCtx.setTransform(d,0,0,d,0,0);}
 function drawMap(){resizeMap();const w=mapCanvas.clientWidth,h=mapCanvas.clientHeight;if(w<20)return;mapCtx.clearRect(0,0,w,h);mapCtx.fillStyle='#071119';mapCtx.fillRect(0,0,w,h);const scale=Math.min((w-44)/1600,(h-44)/1120);const ox=(w-1600*scale)/2,oy=(h-1120*scale)/2;mapCtx.save();mapCtx.translate(ox,oy);mapCtx.scale(scale,scale);for(const r of rooms){if(!r.name||!state.visited.includes(r.id))continue;mapCtx.fillStyle='#29444c';mapCtx.strokeStyle='#80aaa9';mapCtx.lineWidth=3;mapCtx.fillRect(r.x-50,r.y-50,r.w,r.h);mapCtx.strokeRect(r.x-50,r.y-50,r.w,r.h);mapCtx.fillStyle='#bdd4d2';mapCtx.font='bold 13px ui-monospace,monospace';mapCtx.fillText(r.name,r.x-38,r.y-30);}for(const t of targets){if(state.scanned.includes(t.id)){mapCtx.fillStyle=t.required?'#a6d5a9':'#d6bd83';mapCtx.beginPath();mapCtx.arc(t.x,t.y,9,0,Math.PI*2);mapCtx.fill();}}for(const id of state.markedRooms){const r=rooms.find(x=>x.id===id);if(r&&state.visited.includes(id)){const mx=r.x+r.w-24,my=r.y-28;mapCtx.fillStyle='#e6b76c';mapCtx.beginPath();mapCtx.arc(mx,my,11,0,Math.PI*2);mapCtx.fill();mapCtx.fillStyle='#17232a';mapCtx.font='bold 13px ui-monospace,monospace';mapCtx.fillText('!',mx-3.5,my+4.5);}}mapCtx.fillStyle='#79ded3';mapCtx.strokeStyle='#d2ffff';mapCtx.lineWidth=4;mapCtx.beginPath();mapCtx.arc(state.x,state.y,12,0,Math.PI*2);mapCtx.fill();mapCtx.stroke();mapCtx.restore();mapCtx.fillStyle='#8da8b0';mapCtx.font='10px ui-monospace,monospace';mapCtx.fillText('DRONE POSITION',12,h-12);}
 
